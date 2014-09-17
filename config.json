@@ -1,0 +1,142 @@
+{
+    "device": {
+        "last_config_outcome": "success",
+        "last_change_time": ""
+    },
+	"unit": {
+        "device_0": {
+            "common": {
+                "configurable": {
+                    "fallback_UUIDs": ["a"],
+					"input_UUIDs": [],
+                    "memory_UUID": "g",
+                    "taskboard_id": "t",
+                    "forecaster_id": "h",
+                    "fail_to": "6",
+                    "update_cycle": 60,
+                    "location": "i",
+                    "security": "off",
+                    "communication": {
+                        "type": "REST",
+                        "address": ["j","k"]
+						}
+					},
+	
+					
+                "non-configurable": {
+                    "unit_id": "caf01485-3bb1-4337-a023-5ffc03bf073b",
+                    "description": "Description of device",
+                    "function": "thermometer",
+                    "status": "ready",
+                    "last_error": "OK"
+                    }
+                },
+             "unit_specific": {
+                    "configurable": {},
+                    "non-configurable": {}
+                
+            }
+        },
+		       "device_1": {
+            "common": {
+                "configurable": {
+                    "fallback_UUIDs": ["a"],
+					
+					"input_UUIDs": ["a789ada1-edb5-4cfe-b1f9-8584abbf8a2f"],
+                    "memory_UUID": "g",
+                    "taskboard_id": "t",
+                    "forecaster_id": "h",
+                    "fail_to": "6",
+                    "update_cycle": 5,
+                    "location": "i",
+                    "security": "off",
+                    "communication": {
+                        "type": "REST",
+                        "address": ["j","k"]
+						}
+					},
+	
+					
+                "non-configurable": {
+                    "unit_id": "0d2a1089-be8e-4216-96b6-46552d367091",
+                    "description": "Description of device",
+                    "function": "passthru",
+                    "status": "ready",
+                    "last_error": "OK"
+                    }
+                },
+             "unit_specific": {
+                    "configurable": {},
+                    "non-configurable": {}
+                
+            }
+        },
+		       "device_2": {
+            "common": {
+                "configurable": {
+                    "fallback_UUIDs": ["a"],
+					"input_UUIDs": [],
+                    "memory_UUID": "g",
+                    "taskboard_id": "t",
+                    "forecaster_id": "h",
+                    "fail_to": "6",
+                    "update_cycle": 5,
+                    "location": "i",
+                    "security": "off",
+                    "communication": {
+                        "type": "REST",
+                        "address": ["j","k"]
+						}
+					},
+	
+					
+                "non-configurable": {
+                    "unit_id": "a789ada1-edb5-4cfe-b1f9-8584abbf8a2f",
+                    "description": "Description of device",
+                    "function": "clock",
+                    "status": "ready",
+                    "last_error": "OK"
+                    }
+                },
+             "unit_specific": {
+                    "configurable": {},
+                    "non-configurable": {}
+                
+            }
+        },
+		       "device_3": {
+            "common": {
+                "configurable": {
+                    "fallback_UUIDs": ["a"],
+					
+					"input_UUIDs": ["0d2a1089-be8e-4216-96b6-46552d367091"],
+                    "memory_UUID": "g",
+                    "taskboard_id": "t",
+                    "forecaster_id": "h",
+                    "fail_to": "6",
+                    "update_cycle": 15,
+                    "location": "i",
+                    "security": "off",
+                    "communication": {
+                        "type": "REST",
+                        "address": ["j","k"]
+						}
+					},
+	
+					
+                "non-configurable": {
+                    "unit_id": "d57c1438-2373-4448-8c23-0bd7ad034d6a",
+                    "description": "Description of device",
+                    "function": "16 character display",
+                    "status": "ready",
+                    "last_error": "OK"
+                    }
+                },
+             "unit_specific": {
+                    "configurable": {},
+                    "non-configurable": {}
+                
+            }
+        }
+	}
+}
