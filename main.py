@@ -3,6 +3,7 @@
 
 import json
 import unit
+import unit_custom
 
 ##class CustomUnit(GenericUnit):
 ##    def process (self):
@@ -30,7 +31,7 @@ import unit
 ##        pass
 
 
-def load_persistent_configuration():
+def load_persistent_configuration(file_name = 'config.json'):
     # Load persistent configuration
 
 
@@ -45,7 +46,7 @@ def load_persistent_configuration():
 #   else
 #       Write "Attempt failed" to a place in persistent memory.
 #       try:
-    with open('config.json', 'r') as f:
+    with open(file_name, 'r') as f:
         configuration = json.load(f)
 #       except:
 #           Write "Attempt successful"
@@ -60,12 +61,12 @@ def establish_network_connection():
 function_list = {"thermometer":unit.GenericUnit,
                   "electric meter":unit.GenericUnit,
                    "clock":unit.ClockUnit,
-                   "16 character display": unit.charOutputUnit,
+                   "16 character display": unit_custom.charOutputUnit,
                    "passthru":unit.PassThruUnit}
 
 def configure_units():
     # Load GUID list from configuration in GUID list
-    configuration = load_persistent_configuration()
+    configuration = load_persistent_configuration("config_test.json")
 
     units = []
     for unit_config in configuration["unit"].values():
@@ -94,7 +95,7 @@ def main():
     while True:
         for unit in units:
 
-            unit.process()
+            unit.get_task()
         
         
 if __name__ == "__main__": main()

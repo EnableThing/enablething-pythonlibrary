@@ -5,59 +5,33 @@ Created on Aug 24, 2014
 '''
 
 import unit
+import unit_custom
 import json, time, uuid
 import taskboard_interface
 import unittest
 
 
-def configure_unit(id = uuid.uuid4().hex, input_ids = [], update_cycle = 1):
-    # Load GUID list from configuration in GUID list
-    unit_config = {
-                        "common": {
-                            "configurable": {
-                                "fallback_UUIDs": ["a"],
-                                "input_UUIDs": input_ids,
-                                "memory_UUID": "g",
-                                "taskboard_id": "t",
-                                "forecaster_id": "h",
-                                "fail_to": "6",
-                                "update_cycle": 60,
-                                "location": "i",
-                                "security": "off",
-                                "communication": {
-                                    "type": "REST",
-                                    "address": ["j","k"]
-                                    }
-                                },                      
-                            "non-configurable": {
-                                "unit_id": id,
-                                "description": "Description of device",
-                                "function": "thermometer",
-                                "status": "ready",
-                                "last_error": "OK"
-                                }
-                            },
-                         "unit_specific": {
-                                "configurable": {},
-                                "non-configurable": {}
-                            
-                        }
-                    }
-    
-    return unit.GenericUnit(unit_config)
 
-def configure_clockunit(id = uuid.uuid4().hex, input_ids = [], update_cycle = 0):
+import logging
+
+# create logger
+logging.basicConfig(filename='log.log',level=logging.DEBUG)
+       
+
+def configure_unit(unit_setup = unit.GenericUnit, id = None, input_ids = [], update_cycle = 5, description = "Generic unit"):
+    if id == None:
+        id = uuid.uuid4().hex
     # Load GUID list from configuration in GUID list
     unit_config = {
                         "common": {
                             "configurable": {
                                 "fallback_UUIDs": [],
-                                "input_UUIDs": [],
+                                "input_UUIDs": input_ids,
                                 "memory_UUID": "g",
                                 "taskboard_id": "t",
                                 "forecaster_id": "h",
                                 "fail_to": "6",
-                                "update_cycle": 60,
+                                "update_cycle": update_cycle,
                                 "location": "i",
                                 "security": "off",
                                 "communication": {
@@ -67,8 +41,8 @@ def configure_clockunit(id = uuid.uuid4().hex, input_ids = [], update_cycle = 0)
                                 },                      
                             "non-configurable": {
                                 "unit_id": id,
-                                "description": "Test clock unit",
-                                "function": "clock",
+                                "description": description,
+                                "function": "display",
                                 "status": "ready",
                                 "last_error": "OK"
                                 }
@@ -79,7 +53,9 @@ def configure_clockunit(id = uuid.uuid4().hex, input_ids = [], update_cycle = 0)
                             
                         }
                     }
-    return unit.ClockUnit(unit_config)
+  
+    return unit_setup(unit_config)
+
 
 
 class Test_Taskboard(unittest.TestCase):
@@ -105,95 +81,118 @@ class Test_Taskboard(unittest.TestCase):
 # OR unit- Instantiate and perform AND function with 2 inputs and 5 inputs
 # NOT unit- Instantiate and perform AND function with 1 input
 # XOR unit- Instantiate and perform AND function with 2 inputs and 5 inputs
-  
-    
-    #unittest.skip("Skip clock")   
-    def test_inputs(self):
-        from_unit = uuid.uuid4().hex
-        
-        task1 = unit.Task(from_unit = from_unit, to_unit = uuid.uuid4().hex)
-        task2 = unit.Task(from_unit = from_unit, to_unit = uuid.uuid4().hex)
-        
-        #input1 = unit.Input_Request(task1)
-        #input2 = unit.Input_Request(task2)
-        input_set = unit.Input_Set([task1, task2])
-        
-        input1 = input_set.requests[0]
-        input2 = input_set.requests[1]
-        
-        print input_set.debug()
-        self.assertFalse(input1.isResponse())
-        self.assertFalse(input2.isResponse())
-        
-        self.assertFalse(input_set.isResponse())
-        
-        input1.input_received(task1)
-        
-        print input_set.debug()
-        self.assertTrue(input1.isResponse())
-        self.assertFalse(input2.isResponse())
-        
-        self.assertFalse(input_set.isResponse())
-        
-        input2.input_received(task2)
-        
-        print input_set.debug()
-        self.assertTrue(input1.isResponse())
-        self.assertTrue(input2.isResponse())
-        
-        self.assertTrue(input_set.isResponse())
 
+
+    def test_PassThruUnit(self):
+        inputunit = configure_unit(unit_setup = unit.GenericUnit, input_ids = [], update_cycle = 0, description = "Input unit - clock")
+        print "INPUTUNIT.ID", inputunit.id
+        processunit = configure_unit(unit_setup = unit.PassThruUnit, input_ids = [inputunit.id], update_cycle = 0, description = "PassThruUnit unit")
+        print "PROCESSUNIT.ID", processunit.id
+        # Process announces
+        start_time = time.time()
+        while time.time() - start_time < 2:
+            inputunit.get_task()
+            processunit.get_task()
+            
+        # Should be no memory initially on inputunit       
+        self.assertTrue('dummy_reading' in inputunit.memory.history[0].data)
+        
+        print "test inputunit.memory.history"
+
+        for i in inputunit.memory.history:
+            print "inputunit.memory", i.time_stamp, i.data
+        
+        print "test processunit.memory"
+
+        for i in processunit.memory.history:
+            print "processunit.memory", i.time_stamp, i.data
+        
+        print "test processunit.inputboard.input_container"
+        
+        for input_container in processunit.inputboard.input_container:
+            for i in input_container.history:
+                print "i", i
+                print "processunit.inputboard.input_container.history", i.time_stamp, i.data
+
+        self.assertTrue('dummy_reading' in processunit.memory.history[0].data)
+        self.assertTrue('dummy_reading' in processunit.inputboard.input_container[0].history[0].data)
+ 
+ 
+
+    #unittest.skip("Skip")
+    def test_response_chain(self):
+        inputunit = configure_unit(unit_setup = unit.ClockUnit, input_ids = [], update_cycle = 0, description = "Clock unit")
+        processunit = configure_unit(unit_setup = unit.PassThruUnit, input_ids = [inputunit.id], update_cycle = 0, description = "Pass-through unit")
+        outputunit = configure_unit(unit_setup = unit_custom.charOutputUnit, input_ids = [processunit.id], update_cycle = 0, description = "Output unit")
+
+        start_time = time.time()
+        while time.time() - start_time < 2:
+            inputunit.get_task()
+            processunit.get_task()
+            outputunit.get_task()
+            
+        for i in inputunit.memory.history:
+            print "input.memory", i.time_stamp, i.data
+            
+        for i in processunit.memory.history:
+            print "processunit.memory", i.time_stamp, i.data
+            
+        for i in outputunit.memory.history:
+            print "outputunit.memory", i.time_stamp, i.data
+
+        for input_container in processunit.inputboard.input_container:
+            for i in input_container.history:
+                print "i", i
+                print "processunit.inputboard.input_container.history", i.time_stamp, i.data        
+        
+        for input_container in outputunit.inputboard.input_container:
+            for i in input_container.history:
+                print "i", i
+                print "outputunit.inputboard.input_container.history", i.time_stamp, i.data
+                   
+        self.assertTrue('time' in outputunit.memory.history[0].data)
+        
+    #unittest.skip("Skip")        
+    def test_display(self):
+        # Setup a clock unit and request the time
+        display_unit = configure_unit(unit_setup = unit_custom.charOutputUnit)   
+        
+        # Process announce
+        rtn = display_unit.display_interface("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOP")
+                  
+        self.assertEqual(rtn, "ABCDEFGHIJKLMNOP/nQRSTUVWXYZABCDEF")   
+        
     #unittest.skip("Skip clock")        
     def test_process(self):
-        unit = configure_unit(id = uuid.uuid4().hex)
-        unit.get_task()
-        unit.get_task()
-        unit.get_task()
-        print unit.memory.json()
-        self.assertTrue('forecast' in unit.memory.json())
-        self.assertTrue('history' in unit.memory.json())
+        test_unit = configure_unit(unit_setup = unit.GenericUnit, id = uuid.uuid4().hex, update_cycle = 0)
+        
+        start_time = time.time()
+        while time.time() - start_time < 1:
+            test_unit.get_task()
+        
+        print test_unit.memory.json()
+        self.assertTrue('forecast' in test_unit.memory.json())
+        self.assertTrue('history' in test_unit.memory.json())
     
-   
+    #unittest.skip("Skip")
     def test_clock(self):
         # Setup a clock unit and request the time       
-        clock_unit = configure_clockunit(update_cycle = 0)
+        clock_unit = configure_unit(unit_setup = unit.ClockUnit, description = "Clock unit", update_cycle = 0)
         # Process announce
         clock_unit.get_task()
                 
         masterunit_id = uuid.uuid4().hex
-        masterunit = configure_unit(id = masterunit_id, input_ids = [clock_unit.id], update_cycle = 0)
+        masterunit = configure_unit(unit_setup = unit.GenericUnit, id = masterunit_id, input_ids = [clock_unit.id], description = "Master unit", update_cycle = 60)
         
-        # Process announce
-        masterunit.get_task()
-       
-        # Create a reading 
-        clock_unit.get_task()
-        print clock_unit.taskboard.debug()
+        start_time = time.time()
+        while time.time() - start_time < 1:
+            # Process announce
+            masterunit.get_task()
+            # Create a reading 
+            clock_unit.get_task()
         
-        # Trigger a request_inputs 
-        # Normally this would be at the poll interval
-
-        set_id = masterunit.request_inputs()
-               
-        clock_unit.get_task()
-            
-        self.assertFalse(masterunit.inputboard.isResponse(set_id))
-        
-        masterunit.get_task()
-        
-        task_id = masterunit.taskboard.last_removed_task_id()
-        
-        masterunit.get_task()
-              
-        task = taskboard_interface.get_task(masterunit.taskboard.last_removed_task_id())
-        
-        #print task['command'], "output" in task['command']
-        #print task['response'], "dummy reading" in task['response']
-        self.assertTrue("output" in task['command'])
-        self.assertTrue("history" in task['response'])
-        self.assertTrue("forecast" in task['response'])
-        
-        self.assertTrue(masterunit.inputboard.isResponse(set_id))
+        self.assertTrue('time' in clock_unit.memory.history[0].data)
+  
         
     #unittest.skip("Skip clock")        
     def test_taskboard_addtask(self):
@@ -228,10 +227,10 @@ class Test_Taskboard(unittest.TestCase):
         
         masterunit_id = uuid.uuid4().hex
         
-        testunit1 = configure_unit(id = testunit1_id)
-        testunit2 = configure_unit(id = testunit2_id)
+        testunit1 = configure_unit(unit_setup = unit.GenericUnit, id = testunit1_id)
+        testunit2 = configure_unit(unit_setup = unit.GenericUnit, id = testunit2_id)
         
-        masterunit = configure_unit(id = masterunit_id, input_ids = [testunit1.id,testunit2.id])
+        masterunit = configure_unit(unit_setup = unit.GenericUnit, id = masterunit_id, input_ids = [testunit1.id,testunit2.id])
           
               
         self.assertTrue(masterunit.status == "new")
@@ -350,7 +349,7 @@ class Test_Taskboard(unittest.TestCase):
                          
         # Instantiate new_unit depending on unit_class
          
-        testunit = configure_unit()
+        testunit = configure_unit(unit_setup = unit.GenericUnit)
         # Run unit ... which should generate an "announce"
         
         testunit.get_task()
