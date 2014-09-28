@@ -5,10 +5,18 @@
 import uuid
 import time
 import taskboard_interface
-from datetime import datetime
+#from datetime import datetime
 import json
 
 import logging
+
+import datetime
+import time
+from email import utils
+
+import configmanage
+
+from jsonschema import validate
 
 # # create logger
 # logger = logging.getLogger('simple_example')
@@ -35,6 +43,23 @@ import logging
 # logging.error('error message')
 # logging.critical('critical message')
 
+def create_timestamp(dt = None):
+    # "local_time_rfc822":"Tue, 23 Sep 2014 18:19:54 -0700"
+    if dt == None:
+        nowdt = datetime.datetime.now()
+    else:
+        nowdt = dt
+        
+    nowtuple = nowdt.timetuple()
+    nowtimestamp = time.mktime(nowtuple)
+    utils.formatdate(nowtimestamp)
+    return utils.formatdate(nowtimestamp)
+
+def load_timestamp(timestamp):
+    # from a string
+    #https://gist.github.com/robertklep/2928188
+    return datetime.datetime.fromtimestamp(utils.mktime_tz(utils.parsedate_tz(timestamp)))
+
 def shortid(id):
     return id[:4] + "..."
 
@@ -43,8 +68,6 @@ class Poll(object):
         self.start_time = time.time()        
         self.poll_interval = poll_interval
         
-
-
     def restart(self):
         self.start_time = time.time()
 
@@ -66,13 +89,20 @@ class Poll(object):
 class DataPoint(object):
     def __init__(self, data, time_stamp = None):
         if time_stamp == None:
-            time_stamp = self.current_timestamp()
+            #time_stamp = self.create_timestamp()
+            time_stamp = create_timestamp()
         self.time_stamp = time_stamp
         self.data = data
-        
-    def current_timestamp(self):
-        return datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-    
+#         
+#     def create_timestamp(self):
+#         # "local_time_rfc822":"Tue, 23 Sep 2014 18:19:54 -0700"
+#         nowdt = datetime.datetime.now()
+#         nowtuple = nowdt.timetuple()
+#         nowtimestamp = time.mktime(nowtuple)
+#         utils.formatdate(nowtimestamp)
+#         return utils.formatdate(nowtimestamp)
+#         #return datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+#     
     def json(self):
         # Create a dictionary
         json_dict = {
@@ -90,17 +120,24 @@ class Memory(object):
                            }
         self.history = []
         self.forecast = []
+        self.schema = configmanage.load_schema('memoryschema.json')  
 
 
-    def add(self, data):
+    def add(self, data, time_stamp = None):
         logging.debug("Memory add()")
-        self.history.insert(0, DataPoint(data))
+        self.history.insert(0, DataPoint(data, time_stamp))
 
     def remove(self, datapoint):
         raise NotImplemented
         self.history.remove(datapoint)
 
+    def validate(self, json_dict):
+        return validate(json_dict, self.schema)
+         
     def replace(self, json_input):
+        
+        self.validate(json_input)
+        
         print "replace()"
         self.forecast = []
         self.history = []
@@ -120,16 +157,15 @@ class Memory(object):
         
         print "self.json()", self.json()
 
-    def replace_history(self, new_history):
-        raise NotImplemented("Replace existing Memory history")
-        # new_history is a json string {"point 1":{"time_stamp":time,
-        #   "datapoint":data},"point 2":{...}}
+#     def replace_history(self, new_history):
+#         raise NotImplemented("Replace existing Memory history")
+#         # new_history is a json string {"point 1":{"time_stamp":time,
+#         #   "datapoint":data},"point 2":{...}}
 
-    def update_forecast(self):
-        raise NotImplemented("Update forecast")
-        # Make a call to the forecast unit using self.history
-        # TBD
-        pass
+    def add_forecast(self, data, time_stamp = None):
+        logging.debug("Forecast add()")
+        #self.forecast.insert(0, DataPoint(data, time_stamp))
+        self.forecast.append(DataPoint(data, time_stamp))
 
 
     def trim(self, low, high):
@@ -589,10 +625,10 @@ class Inputs(object):
 class GenericUnit(object):
             
     def __init__(self,unit_config):
-        
+        self.configuration = configmanage.UnitConfiguration(unit_config)
         # consider refactor for **kwargs
         configurable = unit_config["common"]["configurable"]
-        non_configurable = unit_config["common"]["non-configurable"]
+        non_configurable = unit_config["common"]["non_configurable"]
         self.json_config = unit_config
 
         # Apply configuration
@@ -616,6 +652,15 @@ class GenericUnit(object):
         # not implemented
         self.security = "off"
         self.communication = configurable["communication"]
+
+        # load unit specific customizable variables
+        specific_config = unit_config['unit_specific']['configurable']
+        for key, value in specific_config.iteritems():
+            setattr(self,key, value)        
+        
+        specific_nonconfig = unit_config['unit_specific']['non_configurable']
+        for key, value in specific_nonconfig.iteritems():
+            setattr(self,key, value)           
 
         # Additional variables
         self.status = "new"
@@ -680,7 +725,6 @@ class GenericUnit(object):
     
     def new(self):
         # Common startup up procedure
-
         command = {"announce":{"fallback_ids":self.fallback_ids}}
         # Announce using own id for to_unit as this is not addressed to any specific unit
         self.taskboard.request(self.id, command)
@@ -717,8 +761,7 @@ class GenericUnit(object):
     def assimilate_inputs(self, received_input_set):
         # Take inputs received from an output request and
         # address
-        
-        print "assimilate_inputs()"
+
         for request in received_input_set.requests:
             print "  reqeust.task.response", request.task.response
         
@@ -731,28 +774,13 @@ class GenericUnit(object):
             
             input_container.replace(request.task.response)
             
-            print "  ", request.task.response
-            print "    ", input_container.json()
-            #print "    ", input_container.forecast.json()
-            
-            
-            
-        
         # Delete input_set, no longer useful.
         # Don't need to do this because .next() already removed it
         
         # Remove associated taskboard item
         for input_container in received_input_set.requests:
-            #self.taskboard.remove(input_request.task)
             task = self.taskboard.find_task(input_container.task.task_id)
             self.taskboard.remove(task)
-        
-        
-        
-        
-#         # Need to add functionality to also replace forecast
-#         self.isResponse = True
-#         self.response_time = time.time
 
     def on_poll(self):
         # Request inputs at a specific interval
@@ -798,10 +826,8 @@ class GenericUnit(object):
             logging.debug("input_set.requests %s %s", self.description, input_set.requests)
             print "ready() call self.assimilate_inputs(input_set)"
             self.assimilate_inputs(input_set)
-            #self.inputboard.input_sets.remove(input_set)
             self.process()
             
-    
         if self.input_poll.isTrigger(): 
             self.on_poll()
        
@@ -827,13 +853,9 @@ class GenericUnit(object):
         print "task", task
         if task <> None:
             assert (self.id == task.to_unit)
-        
-
-            #command = None
-            #instruction = None
             # There are tasks waiting to be processed
             # Pop the earliest task and process it
-            #task = self.taskboard.first()
+            # task = self.taskboard.first()
             logging.info("json of task being processed %s", task.json())
 
             command = task.command.keys()[0]
@@ -843,8 +865,6 @@ class GenericUnit(object):
                 logging.debug("Command received - announce")
                 #State this devices GUID and fallback GUIDs
                 task.respond({"fallback_ids":self.fallback_ids})
-                #self.respond (task,)
-#                     task.update(board = "Complete")
                 self.taskboard.remove(task)
     
             if command == "start":
@@ -852,12 +872,12 @@ class GenericUnit(object):
                 # Start this device
                 # No action, device is already running.
                 task.respond({"status":self.set_status})
-                t =task.task_id
-                self.taskboard.find_task(t)
+                #t = task.task_id
+                #self.taskboard.find_task(t)
                 
                 self.taskboard.remove(task)
-                print "Need to confirm task removed"
-                self.taskboard.find_task(t)
+                #print "Need to confirm task removed"
+                #self.taskboard.find_task(t)
     
             if command == "terminate":
                 logging.debug("Command received - terminate")
@@ -885,52 +905,34 @@ class GenericUnit(object):
     
             if command == "setting":
                 logging.debug("Command received - setting")
-                raise NotImplemented("Changing configuration not yet implemented")
                 # Change configuration of this unit
-                # Check received setting for validity
-    
-    
                 # Update configuration in persistent
                 # memory to received setting
-    
-    
-                with open('config.json', 'w') as f:
-                    json.dump(instruction, f)
+                self.configuration.patch(instruction)
+                self.taskboard.remove(task)                    
                 self.set_status("new")
-                self.taskboard.remove(task)
-    
+
             if command == "configuration":
-                logging.debug("Command received - configuration")
-                raise NotImplemented
+                logging.debug("Command received - configuration")               
                 # Respond with this units configuration
- 
-                task.respond(task.response)
-                task.remove()
+                task.respond(self.configuration.unit_config)
                 self.set_status("ready")
     
             if command == "output": 
                 logging.debug("Command received - output")
-                print "Command received - output"
-                print self.description
-                print task.json()
-                print "self.memory.json()",self.memory.json()
-
                 # respond with Memory ie (horizon) history and forecast
                 # Provides Memory of output
                 task.respond(self.memory.json())
-                #self.inputboard.process_received(task)
                 self.taskboard.remove(task)
-                
                 self.set_status("ready")
                 
             if command == "memory":
                 logging.debug("Command received - memory")
-                raise NotImplemented
                 # Overwrite units Memory ie (horizon) history and forecast
                 # This is typically used to update memory variable so is common
                 # to all devices.  If it is a memory unit the memory is updated, for
-                # other units it resets the unit memory.
-                self.memory.add(instruction)
+                # other units it resets the unit memory.             
+                self.memory.replace(instruction)
                 self.taskboard.remove(task)
                         
             
@@ -1010,8 +1012,9 @@ class ClockUnit(GenericUnit):
     def process(self):
         logging.info("process() %s", self.description)
         
-        dt= datetime.now()
-        time_stamp = dt.strftime('%Y-%m-%dT%H:%M:%S')
+        #dt= datetime.now()
+        #time_stamp = dt.strftime('%Y-%m-%dT%H:%M:%S')
+        time_stamp = create_timestamp()
         self.memory.add({"time":time_stamp})
         
     def unit_startup(self):
@@ -1022,8 +1025,45 @@ class ClockUnit(GenericUnit):
 
 class SimpleForecastUnit(GenericUnit):
     def process(self):
-        #Make a forecast based on inputs
-        pass
+        print "PassThruUnit process()"
+        # For the PassThruUnit take the latest received memory and make the units
+        # memory reflect this.
+        # Raise an exception if there is more than one input
+        
+        # Get the next completed input set
+        logging.info("start process() %s", self.description)
+        
+        ''' Take last value and forecast this out for an hour '''
+
+        logging.debug("Passing input to memory")
+
+        if len(self.inputboard.input_container) > 1:
+            raise Exception("More than one input passed to ForecastUnit.")
+        
+        self.memory.history = self.inputboard.input_container[0].history
+        self.memory.forecast = self.inputboard.input_container[0].forecast
+
+
+        # See if there is any data to extrapolate 
+        try:
+            data = self.memory.history[0].data
+            start_time = load_timestamp(self.memory.history[0].time_stamp)
+        except IndexError:
+            data = None
+            start_time = datetime.datetime.now()
+
+        if self.update_cycle <= 0:
+            delta_t = 60*5    
+        else:
+            delta_t = self.update_cycle
+        print "data", data
+        
+        self.memory.forecast = []
+        for i in xrange(10):
+            ts = start_time + datetime.timedelta(seconds = i * delta_t)            
+            time_stamp = create_timestamp(ts)
+            self.memory.add_forecast(data, time_stamp)        
+  
     def unit_startup(self):
         pass
 
@@ -1049,6 +1089,13 @@ class PassThruUnit(GenericUnit):
         self.memory.forecast = self.inputboard.input_container[0].forecast
   
 
+    def unit_startup(self):
+        pass
+
+class NullUnit(GenericUnit):
+    def process(self):
+        print "NullUnit process()"
+        raise NotImplemented
     def unit_startup(self):
         pass
 

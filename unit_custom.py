@@ -5,11 +5,11 @@ import unit
 
 import uuid
 import time
+import requests, json
 import taskboard_interface
 from datetime import datetime
 import json
-
-    
+import logging 
     
 
 #class TypicalInputUnit(GenericUnit):
@@ -79,7 +79,45 @@ class charOutputUnit(unit.GenericUnit):
         #self.memory.history = 
         #self.memory.forecast = self.inputboard.input_container[0].forecast
   
-  
+class weatherInputUnit(unit.GenericUnit):
+    def display_interface(self,text):
+        print "--- 16char DISPLAY ---"
+        s = text[0:16] + "/n" + text[16:32]
+        print s
+        
+        return s
+        
+    def process(self):
+        logging.info("process() %s", self.description)
+        
+        #dt= datetime.now()
+        #time_stamp = dt.strftime('%Y-%m-%dT%H:%M:%S')
+        #
+        
+        url = self.url
+        KEY = self.key
+        FEATURE=self.feature
+        FORMAT="json"
+        QUERY=self.query
+        
+
+        
+        getURL = url+KEY+"/"+FEATURE+"/q/"+QUERY+"."+FORMAT
+        print "getURL",getURL
+        r = requests.get(getURL,
+                         data={},
+                         headers={},
+                         cookies=None,
+                         auth=None)
+        r.raise_for_status()
+        
+        content = json.loads(r.content)
+        print "content", r.content
+        print "content", content
+        observation_time_rfc822 = content['current_observation']['observation_time_rfc822']
+        temp_c = content['current_observation']['temp_c']
+        
+        self.memory.add({"temp_c":temp_c}, time_stamp = observation_time_rfc822)       
     
     def unit_startup(self):
         #Get NTP time

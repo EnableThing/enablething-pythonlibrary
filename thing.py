@@ -5,33 +5,8 @@ import json
 import unit
 import unit_custom
 
-##class CustomUnit(GenericUnit):
-##    def process (self):
-##    # Typical unit
-##        self.get_inputs()
-##
-##
-##        # Perform device function ie 
-##        # . take an observation, 
-##        # . process, or 
-##        # . change setting
-##
-##
-##        #Update units Memory
-##        self.request ("memory", {memory_GUID, Memory})
-##        self.status = "ready"
-##
-##
-##    def ondevice_display(self):
-##        # Update LCD, LEDs, console, etc
-##        pass
-##
-##    def unit_startup (self):
-##        # TBD
-##        pass
 
-
-def load_persistent_configuration(file_name = 'config.json'):
+def load_persistent_configuration(file_name = 'configmanage.json'):
     # Load persistent configuration
 
 
@@ -39,7 +14,7 @@ def load_persistent_configuration(file_name = 'config.json'):
     #Last persistent memory reload failed for some reason.  load in #default configuration - which can be in the code")
 
 
-    #with open('config.json', 'w') as f:
+    #with open('configmanage.json', 'w') as f:
     #json.dump(configuration, f)
 
 

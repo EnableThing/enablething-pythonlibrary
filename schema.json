@@ -1,0 +1,187 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-03/schema",
+	"id": "http://jsonschema.net",
+	"required":true,
+	"additionalProperties":false,
+	"properties":{
+		"thing": {
+			"type":"object",
+			"id": "http://jsonschema.net/device",
+			"required":true,
+			"additionalProperties":false,
+			"properties":{
+				"last_change_time": {
+					"type":"string",
+					"id": "http://jsonschema.net/device/last_change_time",
+					"required":true
+				},
+				"last_config_outcome": {
+					"type":"string",
+					"id": "http://jsonschema.net/device/last_config_outcome",
+					"required":true
+				}
+			}
+		},
+		"units": {
+			"type":"array",
+			"id": "",
+			"required":false,		
+			"items":{
+						"type":"object",
+					"id": "http://jsonschema.net/unit/device_0",
+					"required":true,
+					"additionalProperties":false,
+					"properties":{
+						"common": {
+							"type":"object",
+							"id": "http://jsonschema.net/unit/device_0/common",
+							"required":true,
+							"additionalProperties":false,
+							"properties":{
+								"configurable": {
+									"type":"object",
+									"id": "http://jsonschema.net/unit/device_0/common/configurable",
+									"required":true,
+									"additionalProperties":false,
+									"properties":{
+										"communication": {
+											"type":"object",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/communication",
+											"required":true,
+											"properties":{
+												"address": {
+													"type":"array",
+													"id": "http://jsonschema.net/unit/device_0/common/configurable/communication/address",
+													"required":true,
+													"items":
+														{
+															"type":"string",
+															"id": "http://jsonschema.net/unit/device_0/common/configurable/communication/address/0",
+															"required":true
+														}
+													
+
+												},
+												"type": {
+													"type":"string",
+													"id": "http://jsonschema.net/unit/device_0/common/configurable/communication/type",
+													"required":true
+												}
+											}
+										},
+										"fail_to": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/fail_to",
+											"required":true
+										},
+										"fallback_UUIDs": {
+											"type":"array",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/fallback_UUIDs",
+											"required":true,
+											"items":
+												{
+													"type":"string",
+													"id": "http://jsonschema.net/unit/device_0/common/configurable/fallback_UUIDs/0",
+													"required":true
+												}
+											
+
+										},
+										"forecaster_id": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/forecaster_id",
+											"required":true
+										},
+										"input_UUIDs": {
+											"type":"array",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/input_UUIDs",
+											"required":true
+										},
+										"location": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/location",
+											"required":true
+										},
+										"memory_UUID": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/memory_UUID",
+											"required":true
+										},
+										"security": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/security",
+											"required":true
+										},
+										"taskboard_id": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/taskboard_id",
+											"required":true
+										},
+										"update_cycle": {
+											"type":"number",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/update_cycle",
+											"required":true
+										}
+									}
+								},
+								"non_configurable": {
+									"type":"object",
+									"id": "http://jsonschema.net/unit/device_0/common/non-configurable",
+									"required":true,
+									"additionalProperties":false,
+									"properties":{
+										"description": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/non-configurable/description",
+											"required":true
+										},
+										"function": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/non-configurable/function",
+											"required":true
+										},
+										"last_error": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/non-configurable/last_error",
+											"required":true
+										},
+										"status": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/non-configurable/status",
+											"required":true
+										},
+										"unit_id": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/non-configurable/unit_id",
+											"required":true
+										}
+									}
+								}
+							}
+						},
+						"unit_specific": {
+							"type":"object",
+							"id": "http://jsonschema.net/unit/device_0/unit_specific",
+							"required":true,
+							"additionalProperties":false,
+							"properties":{
+								"configurable": {
+									"type":"object",
+									"id": "http://jsonschema.net/unit/device_0/unit_specific/configurable",
+									"additionalProperties": true,
+									"required":true
+								},
+								"non_configurable": {
+									"type":"object",
+									"id": "http://jsonschema.net/unit/device_0/unit_specific/non-configurable",
+									"additionalProperties": true,
+									"required":true
+								}
+							}
+						}
+				}
+			}
+		}
+	}
+}
