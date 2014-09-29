@@ -41,14 +41,14 @@ function_list = {"thermometer":unit.GenericUnit,
 
 def configure_units():
     # Load GUID list from configuration in GUID list
-    configuration = load_persistent_configuration("config_test.json")
+    configuration = load_persistent_configuration("config.json")
 
     units = []
-    for unit_config in configuration["unit"].values():
+    for unit_config in configuration["units"]:
 
-        unit_id = unit_config["common"]["non-configurable"]["unit_id"]
+        unit_id = unit_config["common"]["non_configurable"]["unit_id"]
         print unit_id
-        unit_class = unit_config["common"]['non-configurable']['function']
+        unit_class = unit_config["common"]['non_configurable']['function']
         print unit_class
 
         # Instantiate new_unit depending on unit_class

@@ -1,0 +1,96 @@
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/d77e6bbb06284e13bfb37a0e05bff8f7 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/d77e6bbb06284e13bfb37a0e05bff8f7/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/d77e6bbb06284e13bfb37a0e05bff8f7 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/d77e6bbb06284e13bfb37a0e05bff8f7/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/6d744c0190b34b1090f1ad911471a2b3 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/6d744c0190b34b1090f1ad911471a2b3/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/6d744c0190b34b1090f1ad911471a2b3 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/6d744c0190b34b1090f1ad911471a2b3/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/6d744c0190b34b1090f1ad911471a2b3 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/6d744c0190b34b1090f1ad911471a2b3/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/6d744c0190b34b1090f1ad911471a2b3 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/6d744c0190b34b1090f1ad911471a2b3/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/60d6dee13f4f43358d8a6b0ca60082fd ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/60d6dee13f4f43358d8a6b0ca60082fd/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+DEBUG:root:Removing 0d10179e4d5b4275985d69bd02eacfed
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+DEBUG:root:Removing 9f144a2595af4841ac6dbca9a755b3ed
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/59e827d3ab1e4ecc9ff4df9671e34649 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/59e827d3ab1e4ecc9ff4df9671e34649/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/to_unit/cc385b6aebd14771838777742414f2eb/?board=Backlog ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/59e827d3ab1e4ecc9ff4df9671e34649 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/59e827d3ab1e4ecc9ff4df9671e34649/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/59e827d3ab1e4ecc9ff4df9671e34649 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/59e827d3ab1e4ecc9ff4df9671e34649/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/to_unit/24e5fcd4c4064cb18cf3958b4525db62/?board=Backlog ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+DEBUG:root:Removing b57a984474c14fc9a20e6e3488d7014a
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/a1cedb8de5044d32bc893112d86eb5e3 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/a1cedb8de5044d32bc893112d86eb5e3/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/to_unit/5fed35138e684e8aa655cd4ebb3736ce/?board=Backlog ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/a1cedb8de5044d32bc893112d86eb5e3 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/a1cedb8de5044d32bc893112d86eb5e3/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/a1cedb8de5044d32bc893112d86eb5e3 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/a1cedb8de5044d32bc893112d86eb5e3/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/e3e4c2c61a2d46cf926f27f5f57e5a76 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/e3e4c2c61a2d46cf926f27f5f57e5a76/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/e3e4c2c61a2d46cf926f27f5f57e5a76 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/e3e4c2c61a2d46cf926f27f5f57e5a76/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/e3e4c2c61a2d46cf926f27f5f57e5a76 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/e3e4c2c61a2d46cf926f27f5f57e5a76/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/e3e4c2c61a2d46cf926f27f5f57e5a76 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/e3e4c2c61a2d46cf926f27f5f57e5a76/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/6bac4dce9151471e96e47c6e060a2103 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/6bac4dce9151471e96e47c6e060a2103/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+DEBUG:root:Removing b1b8caf6bc1c487c8bab6e437e6b9e37
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/to_unit/41cf9b99cbda4ab3ad1cdc2286814192/?board=Backlog ('HTTP/1.1',)" 200 None
