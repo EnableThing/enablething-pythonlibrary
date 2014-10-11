@@ -1,6 +1,16 @@
 from collections import defaultdict, OrderedDict
 import time
 
+# from restlite import restlite
+# 
+# @restlite.resource
+# def testcall():
+#     def GET(request):
+#         
+#         return request.response(("testcall"))     
+# 
+#     return locals()
+
 class PheromoneTable(object):
     def __init__(self):
         self.q = 1
@@ -77,35 +87,6 @@ class NeighbourTable(object):
         # And remove neighbour from pheromone table
         raise NotImplemented
 
-class Chronicle(object):
-    # Class to extract and write chronicle to message
-    def __init__(self, task):
-        self.task = task
-        self.chronicle = task.chronicle
-        self.start_time = time.time() 
-        self.visited_uuids = OrderedDict(dict)
-        for key, value in self.chronicle.iteritems():
-            if key == "uuid":
-                self.visited_uuids.append(value)
-
-    def last(self):
-        return self.visited_uuids(-1)
-        
-    def next(self, current_unit_id):
-        # Return the next unit visited after 'current_unit_id'
-        index = self.visited_uuids.keys().index(current_unit_id)
-        return self.chronicle[index+1]
-    
-    def previous(self, current_unit_id):
-        # Return the previous unit visited before 'current_unit_id'
-        # This allows the path back to the originating unit to be traced.
-        index = self.visited_uuids.keys().index(current_unit_id)
-        return self.chronicle[index-1]
-                
-    def update(self):
-        elapsed_time = time.time() - self.start_time
-        updated_chronicle = self.chronicle.append({"uuid":id, "time_ms": elapsed_time})
-        self.task.update(chronicle = updated_chronicle)    
     
 class Router(object):
     def __init__(self, unit_id):
@@ -114,9 +95,92 @@ class Router(object):
         self.unit_id = unit_id
         self.chronicle = None
 
+
     def kill(self):
         # Don't pass the packet on
         pass
+
+    def forward_ant(self):
+        # forward ant
+        # check pheromone table and route to best neighbour or multicast
+        try:
+            self.forward(self.pheromone.best_neighbour(self.to_unit))
+        except KeyError:
+            # Not found, so multi-cast to all units
+            self.forward()
+
+    def backward_ant(self):
+        # 'backward ant' retracing its steps
+        # check chronicle and route back along route
+        neighbour = self.chronicle.previous()
+        destination = self.task.to_unit
+
+        # Reinforce pheromone table T goodness for neighbour, destination
+        self.pheromone.reinforce(destination, neighbour)
+        '''delete message from taskboard'''
+
+    def route_message(self):
+        if task.response == {}:
+            self.forward_ant()
+        else:
+            self.backward_ant()
+            
+    
+
+    def receive_task(self,task):
+        
+        #task = self.incoming()
+        if task == None:
+            return
+        
+        # If any message received, then update pheromone table
+        # This will reduce all pheromone values globally
+        self.pheromone.update()
+
+        # Find out where the message came from and
+        # update the Neighbour table.
+        # Even if it comes from 'radio' the unit sending it is a neighbour
+        neighbour = self.chronicle.last()
+        self.neighbours.update(neighbour)
+
+        # Check for a loop in chronicle
+        if self.chronicle.isLoop():
+            return
+
+        # Debatable: TTL kill messages if they are too old.
+        # Try initially setting TTL to 10 minutes
+        '''if chronicle life > TTL:
+            return'''
+
+        '''add message to task board'''
+        # By adding message to task board, unit will process messages addressed
+        # to it, so no further action needed to "process" message here.
+
+        ''' if message is not addressed to this unit:
+            append chronicle
+            route message  '''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def forward(self, destination = None):
         if destination == None:
@@ -129,6 +193,7 @@ class Router(object):
         
         raise NotImplemented
         
+    
     def route(self, task):
         # Make sure Router isn't being asked to route a message(task) intended for the host unit
         assert task.to_unit <> self.unit_id

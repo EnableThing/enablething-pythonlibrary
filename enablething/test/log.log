@@ -94,3 +94,427 @@ INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 
 DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
 INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
 DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/to_unit/41cf9b99cbda4ab3ad1cdc2286814192/?board=Backlog ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+DEBUG:root:Removing 09e262c93a4042e0aec858a5154aa5de
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/06c93ff0403f4b0d8953ab7e99681948 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/06c93ff0403f4b0d8953ab7e99681948/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/to_unit/27f96cf867c0419ca5e382c4c903429b/?board=Backlog ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/06c93ff0403f4b0d8953ab7e99681948 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/06c93ff0403f4b0d8953ab7e99681948/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/06c93ff0403f4b0d8953ab7e99681948 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/06c93ff0403f4b0d8953ab7e99681948/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/7a4db43959a3466e80aa3f47ee5e4dfa ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/7a4db43959a3466e80aa3f47ee5e4dfa/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/7a4db43959a3466e80aa3f47ee5e4dfa ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/7a4db43959a3466e80aa3f47ee5e4dfa/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/7a4db43959a3466e80aa3f47ee5e4dfa ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/7a4db43959a3466e80aa3f47ee5e4dfa/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/7a4db43959a3466e80aa3f47ee5e4dfa ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/7a4db43959a3466e80aa3f47ee5e4dfa/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/17cb11481b5a489dbe6b154003d39d7b ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/17cb11481b5a489dbe6b154003d39d7b/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+DEBUG:root:Removing 9dd16e7c8fe94b98b4d7b5e3313aa9bd
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/to_unit/2c9b3fee78934ce495b6ff721988c0ba/?board=Backlog ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+DEBUG:root:Removing 2b044c81a6e2482d85c98dc564bc505c
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/064426777e224c89bee93f06927792c8 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/064426777e224c89bee93f06927792c8/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/to_unit/cc3ff34e50e34f92abcc8d49fefa1926/?board=Backlog ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/064426777e224c89bee93f06927792c8 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/064426777e224c89bee93f06927792c8/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/064426777e224c89bee93f06927792c8 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/064426777e224c89bee93f06927792c8/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/f46d9e3a28f64902987658f7cfe34b32 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/f46d9e3a28f64902987658f7cfe34b32/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/f46d9e3a28f64902987658f7cfe34b32 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/f46d9e3a28f64902987658f7cfe34b32/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/f46d9e3a28f64902987658f7cfe34b32 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/f46d9e3a28f64902987658f7cfe34b32/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/f46d9e3a28f64902987658f7cfe34b32 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"PATCH /api/tasks/task_id/f46d9e3a28f64902987658f7cfe34b32/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/93df71e7fa6c47aa872535e71c88c274 ('HTTP/1.1',)" 301 None
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/task_id/93df71e7fa6c47aa872535e71c88c274/ ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+DEBUG:root:Removing 6c85bcf74d92409687c8ca6d35f343c3
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /api/tasks/ ('HTTP/1.1',)" 201 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/tasks/to_unit/cc68381ffe3443b4946b38a772380a26/?board=Backlog ('HTTP/1.1',)" 200 None
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/aa5aeefd371e4367b07437244be9c2d4 ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/a784c3479e874066ab4cce73d138c4c0 ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/6211918c63ac4df7b482da15f5e1fee6 ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/a78b119f8e884daab83f1a66a5fdb09b ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/cd1211ad8ecb498b80463dc01f370df7 ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/13679ad853f64e6a889e41ed54ffb87c ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/13679ad853f64e6a889e41ed54ffb87c ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 9
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/13679ad853f64e6a889e41ed54ffb87c ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/13679ad853f64e6a889e41ed54ffb87c ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+WARNING:requests.packages.urllib3.connectionpool:Retrying (0 attempts remain) after connection broken by 'error(10061, 'No connection could be made because the target machine actively refused it')': /unit/caf01485-3bb1-4337-a023-5ffc03bf073b
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+WARNING:requests.packages.urllib3.connectionpool:Retrying (0 attempts remain) after connection broken by 'error(10061, 'No connection could be made because the target machine actively refused it')': /unit/caf01485-3bb1-4337-a023-5ffc03bf073b
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks/?board=Backlog ('HTTP/1.1',)" 500 495
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks/?board=Backlog ('HTTP/1.1',)" 500 495
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 500 501
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 2
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 2
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 16
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 14
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 2
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 334
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 668
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 1002
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/bd339b833dbd41fea649b9c7bcbd5216/task/9c8f0de98d684e059fa3204787dff439 ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 1336
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 1670
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 2004
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 2338
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 2672
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/c4a2e3345c8d4ea4ad60b795e3af7aac/task/be12302cbd794d06bdf542d569e45695 ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 3006
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/d244ab0c03fa419883e53b6a3679f68a/task/bd5d87d4b37c47c6982c91723638a1e9 ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 3340
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 3674
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/ba0a188cd9c643388f731dcd59b7eaad/task/caf32937ce6145c09a2eec9a3df58ff4 ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/ba0a188cd9c643388f731dcd59b7eaad ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 4008
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/6324a8e654974909968555fd30fe64d2/task/40a679b2ada44bec9d9ddc2b33592922 ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/6324a8e654974909968555fd30fe64d2/task/2904db44233d43549452bc18accb1cc4 ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/6324a8e654974909968555fd30fe64d2 ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 4342
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/6807259b3aeb4d6db516a46164be1f1f/task/b3815cc2fe334fc5a8dc7a765179923f ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/6807259b3aeb4d6db516a46164be1f1f/task/eaeea57cc3e24ba98f0d6859b76ee1da ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/6807259b3aeb4d6db516a46164be1f1f ('HTTP/1.1',)" 500 564
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 4676
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/c39e2105d492472ca464b2a565f9ac17 ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/bc06f6a283a04842889e428c7b6d6e22 ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/bf093ec72d684e47b496d10c555f4f40 ('HTTP/1.1',)" 200 355
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 59
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/tasks?board=Backlog ('HTTP/1.1',)" 200 5367
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/4f168870692b47db946c063416ded118 ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/165934cb65f149a69f1ccf74ac9fc98b ('HTTP/1.1',)" 400 0
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/61ffed2ab07b43159d8ca88416d61e34 ('HTTP/1.1',)" 200 355

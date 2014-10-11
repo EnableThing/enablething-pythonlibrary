@@ -12,6 +12,7 @@ import unittest
 from .. import unit
 from .. import unit_custom
 from .. import taskboard_interface
+from .. import taskobj
 from .. import configmanage
 from .. import jsonschema
 
@@ -114,7 +115,7 @@ class Test_Taskboard(unittest.TestCase):
         unit_specific =  {
                           "configurable": {
                                            "url": "http://api.wunderground.com/api/",
-                                           "key": "PRIVATE",
+                                           "key": "PASSWORD",
                                            "feature": "conditions",
                                            "query": "CYVR",
                                            },

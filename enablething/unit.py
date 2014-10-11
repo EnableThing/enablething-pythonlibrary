@@ -3,62 +3,24 @@
 
 
 import uuid
-import time
-import taskboard_interface
+
+import configmanage
+#import taskboard_interface
+import taskobj
+import taskboardobj
+import router
 #from datetime import datetime
-import json
+#import json
 
 import logging
 
 import datetime
 import time
-from email import utils
+#from email import utils
+#from jsonschema import validate
 
-import configmanage
+from collections import defaultdict, OrderedDict
 
-from jsonschema import validate
-
-# # create logger
-# logger = logging.getLogger('simple_example')
-# logging.setLevel(logging.DEBUG)
-# 
-# # create console handler and set level to debug
-# ch = logging.StreamHandler()
-# ch.setLevel(logging.DEBUG)
-# 
-# # create formatter
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# 
-# # add formatter to ch
-# ch.setFormatter(formatter)
-# 
-# # add ch to logger
-# logging.addHandler(ch)
-
-
-# 'application' code
-# logging.debug('debug message')
-# logging.info('info message')
-# logging.warn('warn message')
-# logging.error('error message')
-# logging.critical('critical message')
-
-def create_timestamp(dt = None):
-    # "local_time_rfc822":"Tue, 23 Sep 2014 18:19:54 -0700"
-    if dt == None:
-        nowdt = datetime.datetime.now()
-    else:
-        nowdt = dt
-        
-    nowtuple = nowdt.timetuple()
-    nowtimestamp = time.mktime(nowtuple)
-    utils.formatdate(nowtimestamp)
-    return utils.formatdate(nowtimestamp)
-
-def load_timestamp(timestamp):
-    # from a string
-    #https://gist.github.com/robertklep/2928188
-    return datetime.datetime.fromtimestamp(utils.mktime_tz(utils.parsedate_tz(timestamp)))
 
 def shortid(id):
     return id[:4] + "..."
@@ -86,372 +48,6 @@ class Poll(object):
 
 
 
-class DataPoint(object):
-    def __init__(self, data, time_stamp = None):
-        if time_stamp == None:
-            #time_stamp = self.create_timestamp()
-            time_stamp = create_timestamp()
-        self.time_stamp = time_stamp
-        self.data = data
-#         
-#     def create_timestamp(self):
-#         # "local_time_rfc822":"Tue, 23 Sep 2014 18:19:54 -0700"
-#         nowdt = datetime.datetime.now()
-#         nowtuple = nowdt.timetuple()
-#         nowtimestamp = time.mktime(nowtuple)
-#         utils.formatdate(nowtimestamp)
-#         return utils.formatdate(nowtimestamp)
-#         #return datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-#     
-    def json(self):
-        # Create a dictionary
-        json_dict = {
-                "time_stamp":self.time_stamp,
-                "data":self.data
-                }
-        print "DataPoint json()", json_dict
-        return json_dict
-    
-class Memory(object):
-    def __init__(self):
-        self.time_range = {        
-                           "past":-10000,
-                           "future":10000
-                           }
-        self.history = []
-        self.forecast = []
-        self.schema = configmanage.load_schema('memoryschema.json')  
-
-
-    def add(self, data, time_stamp = None):
-        logging.debug("Memory add()")
-        self.history.insert(0, DataPoint(data, time_stamp))
-
-    def remove(self, datapoint):
-        raise NotImplemented
-        self.history.remove(datapoint)
-
-    def validate(self, json_dict):
-        return validate(json_dict, self.schema)
-         
-    def replace(self, json_input):
-        
-        self.validate(json_input)
-        
-        print "replace()"
-        self.forecast = []
-        self.history = []
-        if json_input == None:
-            return
-        
-        for f in json_input['forecast']:
-            #self.forecast.append(f)
-            print "    f", f['data']
-            self.forecast.append(DataPoint(data = f['data'], time_stamp = f['time_stamp']))
-        
-
-        for h in json_input['history']:
-            print "    h",h, h['data']
-            #self.history.append(h)
-            self.history.append(DataPoint(data = h['data'], time_stamp = h['time_stamp']))
-        
-        print "self.json()", self.json()
-
-#     def replace_history(self, new_history):
-#         raise NotImplemented("Replace existing Memory history")
-#         # new_history is a json string {"point 1":{"time_stamp":time,
-#         #   "datapoint":data},"point 2":{...}}
-
-    def add_forecast(self, data, time_stamp = None):
-        logging.debug("Forecast add()")
-        #self.forecast.insert(0, DataPoint(data, time_stamp))
-        self.forecast.append(DataPoint(data, time_stamp))
-
-
-    def trim(self, low, high):
-        # Provide data set from low to high only
-        raise NotImplemented("Memory trim")
-        memory = []
-        return memory
-    
-    def latest(self):
-        try:
-            return self.history[-1]
-        except: 
-            return DataPoint(None, None)
-    
-    def json(self):
-        print "memory() json()"
-        # Create a dictionary
-        history = []
-        print "len self.history",len(self.history)
-        for i in self.history:
-            history.append(i.json())
-        forecast = []
-        print "self.forecast"
-        for i in self.forecast:
-            forecast.append(i.json())    
-        
-        json_dict = {
-                "history": history,
-                "forecast": forecast
-                }
-        print "  json_dict", json_dict
-        return json_dict
-    
-    def debug(self):
-        print self.json()
-    
-class Task(object):
-    def __init__(self, **kwargs):
-
-        options = {
-            'task_id' : "",
-            'board' : 'Backlog',
-            'command' : {},
-            'response' : {},
-            }
-
-        options.update(kwargs)
-        
-        for key, value in options.iteritems():
-            setattr(self,key, value)     
-        
-        if self.command == "{}":
-            raise Exception("Cannot create a new task with a blank command")
-        
-        t = self.json()
-        if self.task_id == "":
-            # We are creating a task that does not
-            # already exists on the master board, so
-            # post it and get task_id number.
-            r = taskboard_interface.post_task(t)
-            self.task_id = r['task_id']
-        
-        self.json()
-        
-    def command_instruction(self):
-
-        j = self.command
-   
-        key = []
-        value = []
-        for k, v in j.iteritems() :
-            key.append(k)
-            value.append(v)
-        if len(key) <> 1:
-            raise LookupError("Too many commands in command")
-        
-        return key.pop(), value.pop()
-        
-    def get(self):
-        taskboard_interface.get_task(self.task_id)
-        task = taskboard_interface.get_task(self.task_id)
-
-        return task
-                           
-    def update(self, **kwargs):
-      
-        # kwargs is a dictionary
-        # this will require some form of validation to ensure only valid keys are created.  TBD.
-
-        json_dict = {}
-        for key, value in kwargs.iteritems():
-            json_dict[key] = value
-            setattr(self,key, value)
-
-        self.json()
-
-        taskboard_interface.patch_task(self.task_id,json_dict)
-
-    def progress(self):
-        self.update(board = 'In progress')
-              
-    def respond(self, response):
-        self.update(response = response, board = 'Complete')
-
-    def listen_for_response (self):
-        #Check the message board for a command sent to task_id
-        # It will be a task that is Complete
-        task = taskboard_interface.get_task(self.task_id)
-        print "listen_for_response() task['response']", task['response']      
-        if task['response'] <> {}:
-            self.update(response = task['response'])
-        print "listen_for_response() self.response",self.response
-    
-    def isResponse(self):
-        self.listen_for_response()
-        if self.response == {}:
-            return False
-        else:
-            print "Found a response!!!!"
-            return True
-
-    def print_console(self):       
-        print self.json()
-        
-    def json(self):
-        # dumps ... dict to string
-        # loads ... string to dict
-        # Return a dict
-        task_dict = {
-                        "task_id" : self.task_id,
-                        "title": "Blank",
-                        "board": self.board, 
-                        "from_unit": self.from_unit , 
-                        "to_unit": self.to_unit , 
-                        "command": self.command,
-                        "response": self.response
-                        }
-        return task_dict
-    def debug(self):
-        print "  ",self.json()
-        #print "task id: ",self.task_id
-        #print "board:   ", self.board
-        #print "to:      ", self.to_unit
-        #print "from:    ", self.from_unit
-        #print "command: ", self.command
-        #print "response:", self.response
-        #print
-
-
-class Taskboard(object):
-    # Implement an internal task board for managing tasks, adding, removing, 
-    # and requesting new tasks from primary task board.
-
-    def __init__(self,unit_id):
-        self.tasks = []  
-        self.from_unit = unit_id
-        self.last_removed = None
-    
-    def last_removed_task_id(self):
-        return self.last_removed
-    
-    def find_task(self,task_id):
-        # Returns LookupError if no tasks found.
-        # Returns task object if task found.
-        task = [x for x in self.tasks if x.task_id == task_id]
-
-        if len(task) > 1:
-            raise LookupError("Task lookup returned more than one task")
-        if len(task) < 1:
-            raise LookupError("Task lookup returned no tasks")
-       
-        return task[0]
-    
-    def isEmpty(self):
-        return self.tasks == []
-
-
-    def add(self, task):
-        self.tasks.insert(0, task)
-
-#     def update(self, task_id):
-#         task = self.find_task(task_id)
-#         print "*** task.update()"
-#         print "*** task.response", task.response
-#         task.update()
-#         print "*** task.response",task.response
-
-    def first(self):
-        # Return the first task which is a command addressed to this unit.
-        
-        for task in self.tasks:
-            print "task_id",task.task_id
-            if task.to_unit == self.from_unit:
-                print task.response
-                assert(task.response == {})
-                return task
-        return None
-        
-    
-    def remove(self, task):
-        logging.debug("Removing %s", task.task_id)
-        self.last_removed = task.task_id
-        self.tasks.remove(task)
-
-    def size(self):
-        return len(self.tasks)
-    
-    def print_console(self):
-        print "Active tasks"
-        for q in self.tasks:
-                q.print_console()
-
-    def request (self, to_id, command):
-        # Takes a dict command and creates a new task.
-        # Generate a new task with a new UUID for the task
-        task = Task(command = command, from_unit = self.from_unit, to_unit = to_id)
-
-        # Add task_uuid to array live_tasks.
-        self.add(task)
-        self.status = "waiting"
-
-        return task
-
-    def respond (self, task_id, response):
-
-        task = self.find_task(task_id)
-        # Check this
-        # http://stackoverflow.com/questions/10858575/find-object-by-its-member-inside-a-list-in-python 
-        task.update(response = response, board='Complete')
-        #task.respond(response)
-
-        # Remove this task from the task board
-
-        self.status = "ready"
-
-    def get_new_tasks(self, unit_id):
-        new_tasks = []
-        #Check the message board for a new command sent to UUID
-        returned_tasks = taskboard_interface.get_new_tasks(unit_id)
-
-        
-        for returned_task in returned_tasks:
-            task_id = returned_task['task_id']
-
-            if returned_task['board'] == 'Backlog':
-                try:
-                    task = self.taskboard.find_task(task_id)
-                    # Task exists already, don't take any action because it is still on the Backlog
-                except:
-                    # Task does not exist
-                    task = Task(**returned_task)
-                    
-                    task.update(board = 'In progress')
-                    if len(task.command)>1:
-                        raise Exception, "Too many keys in command"                    
-                    new_tasks.append(task_id)
-                    self.add(task)
-                
-        return new_tasks
-    
-
-                
-
-    def listen_for_response (self, task_id):
-
-        return self.find_task(task_id).listen_for_response()
-    
-
-    def check_all(self):
-        for task in self.tasks:
-            self.listen_for_response(task.task_id)
-        
-    def isResponse (self, task_id):
-
-        
-        return self.find_task(task_id).isResponse()
-
-    def debug(self):
-        print "taskboard", self.from_unit
-        if len(self.tasks) == 0:
-            print "  <No tasks on task board>"
-        else:
-
-            for t in self.tasks:
-                t.debug()
-            
 
 
 
@@ -534,7 +130,7 @@ class Inputs(object):
         
         self.input_container = []
         for i in self.input_ids:
-            self.input_container.append(Memory())
+            self.input_container.append(taskobj.Memory())
 
         self.input_sets = []
 
@@ -665,10 +261,12 @@ class GenericUnit(object):
         # Additional variables
         self.status = "new"
         
-        self.taskboard = Taskboard(self.id)
+        self.taskboard = taskboardobj.Taskboard(self.id)
         self.inputboard = Inputs(self.input_ids, self.fallback_ids)
         
-        self.memory =  Memory()
+        self.memory =  taskobj.Memory()
+        
+        self.router = router.Router(self.id)
         
         #self.input_set = []
         #for item in self.input_ids:
@@ -872,12 +470,9 @@ class GenericUnit(object):
                 # Start this device
                 # No action, device is already running.
                 task.respond({"status":self.set_status})
-                #t = task.task_id
-                #self.taskboard.find_task(t)
                 
                 self.taskboard.remove(task)
-                #print "Need to confirm task removed"
-                #self.taskboard.find_task(t)
+
     
             if command == "terminate":
                 logging.debug("Command received - terminate")
@@ -1014,14 +609,12 @@ class ClockUnit(GenericUnit):
         
         #dt= datetime.now()
         #time_stamp = dt.strftime('%Y-%m-%dT%H:%M:%S')
-        time_stamp = create_timestamp()
+        time_stamp = taskobj.create_timestamp()
         self.memory.add({"time":time_stamp})
         
     def unit_startup(self):
         #Get NTP time
         pass
-
-
 
 class SimpleForecastUnit(GenericUnit):
     def process(self):
@@ -1047,7 +640,7 @@ class SimpleForecastUnit(GenericUnit):
         # See if there is any data to extrapolate 
         try:
             data = self.memory.history[0].data
-            start_time = load_timestamp(self.memory.history[0].time_stamp)
+            start_time = taskobj.load_timestamp(self.memory.history[0].time_stamp)
         except IndexError:
             data = None
             start_time = datetime.datetime.now()
@@ -1061,7 +654,7 @@ class SimpleForecastUnit(GenericUnit):
         self.memory.forecast = []
         for i in xrange(10):
             ts = start_time + datetime.timedelta(seconds = i * delta_t)            
-            time_stamp = create_timestamp(ts)
+            time_stamp = taskobj.create_timestamp(ts)
             self.memory.add_forecast(data, time_stamp)        
   
     def unit_startup(self):

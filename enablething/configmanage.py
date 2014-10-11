@@ -42,7 +42,7 @@ def load_json(file_name = 'default_unit_config.json'):
 class UnitConfiguration(object):
     def __init__(self,unit_config):
         self.unit_config = unit_config
-        self.schema = load_schema('schema.json')
+        self.schema = load_schema('../schema/thingschema.json')
         #print "self.schema", self.schema
         #print "test", {"unit":{"device_0":self.unit_config}}
 
@@ -84,31 +84,59 @@ class UnitConfiguration(object):
         
 class ThingConfiguration(object):
     def __init__(self):
-        self.thing_config = None
-        self.schema = load_schema('schema.json')
+        self.config = None
+        self.schema = load_schema('../schema/thingschema.json')
         self.units = []
         self.load()
         
-        validate(self.thing_config, self.schema)
+        validate(self.config, self.schema)
 
-        for unit in self.thing_config['units']:
+        for unit in self.config['units']:
             self.units.append(UnitConfiguration(unit))
     
-    def load(self, file_name = 'config.json'):
+    def load(self, file_name = '../thing/config.json'):
         with open(file_name, 'r') as f:
-            configuration = json.load(f)    
-        self.thing_config = configuration
-        return configuration
+            self.config = json.load(f)    
+        #self.config = configuration
+        return self.config
     
-    def save(self, file_name = 'config.json'):
+    def save(self, file_name = '../thing/config.json'):        
         with open(file_name, 'w') as outfile:
-            json.dump(self.thing_config, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
+            json.dump(self.config, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
+
+    def replace(self, configuration):
+        try:
+            validate(configuration, self.schema)
+        except jsonschema.ValidationError:
+            raise
+        
+        self.config = configuration
+        print "self.config",self.config
+        print "self.config[thing]", self.config['thing']
+        return self.config  
     
     def patch(self, patch):
         self.config = deepMerge(self.config, patch)
         return self.config    
     
+    def unitreport(self):
+        # Return a json dictionary with information about the units
+        value = []
+        print "self.config", self.config
+        for item in self.config['units']:
+            print "item", item
 
+            unit_id = item['common']['non_configurable']['unit_id']
+            description =  item['common']['non_configurable']['description']
+            function = item['common']['non_configurable']['function']
+            status = item['common']['non_configurable']['status']
+            
+            value.append({'unit_id':unit_id, 'description':description, 'function':function, 'status':status})
+            
+        return value
+    
+
+                
 
 # def configure_unit(unit_setup = unit.GenericUnit, unit_id = None, input_ids = [], update_cycle = 5, description = "Generic unit"):
 #     if unit_id == None:
@@ -137,11 +165,11 @@ class ThingConfiguration(object):
 def main():
     c = ThingConfiguration()
     #unit_config = c.units[0].unit_config
-    success_patch = {"unit-specific": {"configurable":{"this field is allowed": 9}}}
+    success_patch = {"unit_specific": {"configurable":{"this field is allowed": 9}}}
 
     
     unit_config = c.units[0].patch(success_patch)
-    print "output", unit_config['unit-specific']["configurable"]['this field is allowed']
+    print "output", unit_config['unit_specific']["configurable"]['this field is allowed']
     
 
 if __name__ == "__main__": main()

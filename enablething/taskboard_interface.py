@@ -16,6 +16,7 @@ def create_random_task():
     x = json.dumps({          
     "title": "empty",
     "board": "Backlog", 
+    "chronicle":{},
     "from_unit": uuid.uuid4().hex , 
     "to_unit": uuid.uuid4().hex , 
     "command": {
@@ -66,6 +67,7 @@ def post_task(task):
     postData = json.dumps({
     "title": task['title'], 
     "board": task['board'], 
+    "chronicle": task['chronicle'], 
     "from_unit": task['from_unit'], 
     "to_unit": task['to_unit'], 
     "command": task['command'], 

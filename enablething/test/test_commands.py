@@ -12,8 +12,10 @@ import unittest
 from .. import unit
 from .. import unit_custom
 from .. import taskboard_interface
+from .. import taskobj
 from .. import configmanage
 from .. import jsonschema
+from .. import taskboardobj
 
 # create logger
 logging.basicConfig(filename='log.log',level=logging.DEBUG)
@@ -78,6 +80,49 @@ class Test_Taskboard(unittest.TestCase):
 # NOT unit- Instantiate and perform AND function with 1 input
 # XOR unit- Instantiate and perform AND function with 2 inputs and 5 inputs
 
+    def test_chronicle(self):
+            
+        # Create a task that requests configuration from input unit
+        id0 = uuid.uuid4().hex 
+        id1 = uuid.uuid4().hex
+        id2 = uuid.uuid4().hex
+        taskboard = taskboardobj.Taskboard(id1)
+        command = {"announce":{}}
+        chronicle = [{'time_ms': 0.0, 'unit_id': id0, 'hop': 1}]
+                   
+        task = taskobj.Task(unit_id = id0, chronicle = chronicle, from_unit = id1, to_unit = id2, command = command)     
+        taskboard.add(task)  
+        self.assertTrue(len(task.chronicle)==1)
+        
+        c = taskobj.Chronicle(unit_id = id1, chronicle = task.chronicle)
+        c.update()
+        
+        task.chronicle = c.json()      
+        self.assertTrue(len(task.chronicle)==2)
+        
+        c = taskobj.Chronicle(unit_id = id2, chronicle = task.chronicle)
+        c.update()
+        
+        self.assertTrue(len(task.chronicle)==3)
+        
+        print "task.chronicle", c.chronicle
+         
+        # Test last
+        self.assertEquals(c.last(), id2)
+        # Test next
+        self.assertEquals(c.next(id1), id2)
+        self.assertEquals(c.next(id0), id1)
+        # Test previous
+        self.assertEquals(c.previous(id1), id0)
+        self.assertEquals(c.previous(id2), id1)
+        
+        # Test error condition
+        
+        self.assertRaises(LookupError, lambda: c.next(id2))
+        
+        self.assertRaises(LookupError, lambda: c.previous(id0))
+
+
  
     def test_command_memory(self):
         # Test sending memory and replacing contents of
@@ -96,13 +141,13 @@ class Test_Taskboard(unittest.TestCase):
             
         # Test that empty strings can be sent/
         id = uuid.uuid4().hex
-        taskboard = unit.Taskboard(id)
+        taskboard = taskboardobj.Taskboard(id)
         command = {"memory":
                     {'forecast': [], 
                      'history': []}
                    }
                             
-        task = unit.Task(from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
         taskboard.add(task)
         
         for __ in xrange(1):
@@ -142,7 +187,7 @@ class Test_Taskboard(unittest.TestCase):
                          {'time_stamp': 'Sat, 27 Sep 2014 23:31:57 -0000', 'data': {'dummy_reading': 606}}]}
                    }
         
-        task = unit.Task(from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
         taskboard.add(task)
         
         for __ in xrange(1):
@@ -177,10 +222,10 @@ class Test_Taskboard(unittest.TestCase):
             
         # Create a task that requests configuration
         id = uuid.uuid4().hex
-        taskboard = unit.Taskboard(id)
+        taskboard = taskboardobj.Taskboard(id)
         command = {"configuration":"Null"}
                     
-        task = unit.Task(from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
         task_id = task.task_id
         taskboard.add(task)
         
@@ -204,9 +249,9 @@ class Test_Taskboard(unittest.TestCase):
             
         # Create a task that requests configuration from input unit 
         id = uuid.uuid4().hex
-        taskboard = unit.Taskboard(id)
+        taskboard = taskboardobj.Taskboard(id)
         command = {"setting":{"common": {"configurable": {"update_cycle": 9999}}}}                   
-        task = unit.Task(from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
         task_id = task.task_id
         taskboard.add(task)
         
@@ -290,15 +335,17 @@ class Test_Taskboard(unittest.TestCase):
             
         # Create a task that requests configuration from input unit 
         id = uuid.uuid4().hex
-        taskboard = unit.Taskboard(id)
+        taskboard = taskboardobj.Taskboard(id)
         command = {"announce":{}}                
-        task = unit.Task(from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
         task_id = task.task_id
         taskboard.add(task)
         
         for __ in xrange(5):
             inputunit.get_task()
             processunit.get_task()
+            
+        print "task.response", task.response
             
               
         self.assertTrue(False)

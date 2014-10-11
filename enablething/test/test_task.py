@@ -14,6 +14,8 @@ from .. import unit_custom
 from .. import taskboard_interface
 from .. import configmanage
 from .. import jsonschema
+from .. import taskobj
+from .. import taskboardobj
 
 # create logger
 logging.basicConfig(filename='log.log',level=logging.DEBUG)
@@ -125,8 +127,8 @@ class Test_Taskboard(unittest.TestCase):
     def test_add(self):
         # Taskboard - Add and remove a task 
         id = uuid.uuid4().hex
-        taskboard = unit.Taskboard(id)
-        task = unit.Task(from_unit = uuid.uuid4().hex, to_unit = uuid.uuid4().hex)
+        taskboard = taskboardobj.Taskboard(id)
+        task = taskobj.Task(unit_id = id, from_unit = uuid.uuid4().hex, to_unit = uuid.uuid4().hex)
         task_id = task.task_id
         taskboard.add(task)
         search_task = taskboard.find_task(task.task_id)
@@ -144,8 +146,8 @@ class Test_Taskboard(unittest.TestCase):
         # Taskboard - Add and remove a task 
         from_id = uuid.uuid4().hex
         to_id = uuid.uuid4().hex
-        taskboard = unit.Taskboard(from_id)
-        task = unit.Task(from_unit = from_id, to_unit = to_id)
+        taskboard = taskboardobj.Taskboard(from_id)
+        task = taskobj.Task(unit_id = from_id, from_unit = from_id, to_unit = to_id)
         expected_task_id = task.task_id
         taskboard.add(task)
         task = taskboard.find_task(task.task_id)
@@ -158,12 +160,12 @@ class Test_Taskboard(unittest.TestCase):
     #unittest.skip("Skip clock")
     def test_request(self):
         from_unit = uuid.uuid4().hex
-        taskboard = unit.Taskboard(uuid.uuid4().hex)
+        taskboard = taskboardobj.Taskboard(uuid.uuid4().hex)
 
         command = {"test":"test"}
         to = uuid.uuid4().hex
 
-        task = unit.Task(command = command, to_unit = to, from_unit = from_unit)
+        task = taskobj.Task(unit_id = from_unit, command = command, to_unit = to, from_unit = from_unit)
         
         # Pass a dict object to to taskboard.request
         taskboard.request(to, command)
@@ -179,7 +181,7 @@ class Test_Taskboard(unittest.TestCase):
     
     #unittest.skip("Skip clock")
     def test_listen_for_response(self):
-        taskboard = unit.Taskboard(uuid.uuid4().hex)
+        taskboard = taskboardobj.Taskboard(uuid.uuid4().hex)
         
         command = {"test":"test_listen_for_response"}
         to = uuid.uuid4().hex
