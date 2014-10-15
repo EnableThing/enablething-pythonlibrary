@@ -3,23 +3,26 @@
 
 
 import uuid
+import re
 
-import configmanage
+import config
 #import taskboard_interface
 import taskobj
 import taskboardobj
 import router
 #from datetime import datetime
-#import json
+import json
 
 import logging
 
 import datetime
 import time
 #from email import utils
-#from jsonschema import validate
+from jsonschema import validate
 
 from collections import defaultdict, OrderedDict
+from restlite import restlite
+
 
 
 def shortid(id):
@@ -63,7 +66,7 @@ class Input_Request(object):
     def update(self):
         # Get latest status from public taskboard
         # and update self.*
-        self.task.listen_for_response()
+        #self.task.listen_for_response()
         print "input_request() self.response", self.task.response
         # listen_for_response updates the task entry.
         if self.task.response <> None:
@@ -217,11 +220,98 @@ class Inputs(object):
         print "inputboard.isResponse()",self.isResponse()
         for instance in self.input_sets:
             instance.debug()          
+
+class RestServer(object):
+    def __init__(self, unit_id, taskboard,router):
+        self.unit_id = unit_id
+        self.taskboard = taskboard
+        self.router = router
+            
+    @restlite.resource
+    def get_task():
+        def GET(self, request):
+            task_id = request['wsgiorg.routing_args']['task_id']
+            self.taskboard.debug()
+          
+            try:    
+                task = self.taskboard.find_task(task_id)
+            except LookupError:
+                raise restlite.Status, '400 Bad Request'
+                return request.response(("Requested Task " + task_id + " not present on this Unit or badly formed Task UUID"))
+            
+            if task.response == {}:
+                raise restlite.Status, '404 Not Found'
+                return request.response(("Requested Task" + task_id + " does not have a Response"))
+            
+            value = task.json().items()
+
+            return request.response((value))  
+        return locals()
+    
+    @restlite.resource
+    def tasklistfilter():
+        def GET(self, request):
+            # Respond to a GET request to /unit/<unit_id>/task with the 
+            # unit's current status
+            filter_string = request['wsgiorg.routing_args']['filter_string']
+            
+            value = []  
+            if filter_string == "":
+                value = []
+                for task in self.taskboard.tasks:
+                    value.append(task.json().items())
+                return request.response((value))
+                
+            expression = "\?(?P<key>\w+)\W+(?P<value>\w+)"       
+            m = re.match(expression, filter_string)
+            search_key = (m.group("key"))
+            search_value = (m.group("value"))
+            
+            filter_response = []
+            for task in self.taskboard.tasks:
+                for key, value in task.json().iteritems():
+                    print "k,v", key, value
+                    if search_key == key and search_value == value: 
+                        filter_response.append(task.json().items())
+            
+            if filter_response == []:
+                raise restlite.Status, '400 Bad Request'
+                return request.response(("Filter strong not found"))     
+    
+            return request.response((filter_response))     
+
+        return locals()
+    
+    @restlite.resource
+    def rest_unit():
+
+        def GET(self, request):
+            print "restunit() GET"
+            # Respond to a GET request to /unit/<unit_id>/task with the 
+            # unit's current status   
+            value = []
+            for task in self.taskboard.tasks:
+                value.append(task.json().items())
+            return request.response((self.unit_id,value))     
+        
+        def POST(self, request, entity):
+            command = json.loads(entity)        
+            try:
+                task = taskobj.Task(self.unit_id, **command)
+            except:
+                raise
+            self.router.process_task(task)
+
+        return locals()          
+            
+class Controller(object):
+    def update(self):
+        pass            
             
 class GenericUnit(object):
             
     def __init__(self,unit_config):
-        self.configuration = configmanage.UnitConfiguration(unit_config)
+        self.configuration = config.UnitConfiguration(unit_config)
         # consider refactor for **kwargs
         configurable = unit_config["common"]["configurable"]
         non_configurable = unit_config["common"]["non_configurable"]
@@ -229,10 +319,12 @@ class GenericUnit(object):
 
         # Apply configuration
         self.id = non_configurable["unit_id"]
+        self.unit_id = non_configurable["unit_id"]
 
         self.function = non_configurable["function"]
         self.description = non_configurable["description"]
 
+        
         
         self.fallback_ids = configurable["fallback_UUIDs"]
         self.input_ids = configurable["input_UUIDs"]
@@ -248,6 +340,7 @@ class GenericUnit(object):
         # not implemented
         self.security = "off"
         self.communication = configurable["communication"]
+        self.neighbours = configurable["neighbours"]
 
         # load unit specific customizable variables
         specific_config = unit_config['unit_specific']['configurable']
@@ -263,10 +356,13 @@ class GenericUnit(object):
         
         self.taskboard = taskboardobj.Taskboard(self.id)
         self.inputboard = Inputs(self.input_ids, self.fallback_ids)
+        self.router = router.Router(self.unit_id, self.taskboard)
+        
+        self.rest = RestServer(self.unit_id, self.taskboard, self.router)
         
         self.memory =  taskobj.Memory()
         
-        self.router = router.Router(self.id)
+        self.task = None
         
         #self.input_set = []
         #for item in self.input_ids:
@@ -290,13 +386,16 @@ class GenericUnit(object):
 #              # Need to figure out how to deal with this
 
         task_set=[] 
+
         for inpt in self.inputboard.input_ids:
 
-            command = {"output":None}
-            task = self.taskboard.request(inpt, command)
+            command = {"output":{}}
+            task = taskobj.Task(unit_id = self.unit_id, command = command, from_unit = self.unit_id, to_unit = inpt)
+            self.taskboard.add(task)
             task_set.append(task)
         
         s = self.inputboard.add(task_set)
+
         return s.id
 
     def ondevice_display(self):
@@ -325,7 +424,14 @@ class GenericUnit(object):
         # Common startup up procedure
         command = {"announce":{"fallback_ids":self.fallback_ids}}
         # Announce using own id for to_unit as this is not addressed to any specific unit
-        self.taskboard.request(self.id, command)
+        
+        # Send an announce to all known neightbours
+        for neighbour in self.neighbours:
+            print "neightbour", neighbour
+            task = taskobj.Task(self.unit_id, from_unit = self.unit_id, to_unit = neighbour, command = {"announce":{"fallback_ids":self.fallback_ids}})
+            self.router.process_task(task)
+        
+        #self.taskboard.request(self.id, command)
         # Unit specific startup
         self.unit_startup()
         self.set_status("ready")
@@ -396,7 +502,8 @@ class GenericUnit(object):
         # Only need to get new tasks for this unit,
         # all other tasks on our task board
         # are being addressed by this unit anyway.
-        self.taskboard.get_new_tasks(self.id)
+        self.task = self.taskboard.get_new_task()
+        
 
 
         # Update inputboard
@@ -447,31 +554,35 @@ class GenericUnit(object):
         # not a response
         # So we look for the task.to_unit to equal our units address.
         
-        task = self.taskboard.first()
-        print "task", task
-        if task <> None:
-            assert (self.id == task.to_unit)
+        #task = self.taskboard.first()
+        print "task", self.task
+        if self.task <> None:
+            assert (self.unit_id == self.task.to_unit)
             # There are tasks waiting to be processed
             # Pop the earliest task and process it
             # task = self.taskboard.first()
             logging.info("json of task being processed %s", task.json())
 
-            command = task.command.keys()[0]
-            instruction = task.command.get(command)
+            command = self.task.command.keys()[0]
+            instruction = self.task.command.get(command)
                 
             if command == "announce":
                 logging.debug("Command received - announce")
                 #State this devices GUID and fallback GUIDs
-                task.respond({"fallback_ids":self.fallback_ids})
-                self.taskboard.remove(task)
+                self.task.respond({"fallback_ids":self.fallback_ids})
+                self.router.process_task(self.task)
+                self.task = None
+                
+                #self.taskboard.remove(task)
     
             if command == "start":
                 logging.debug("Command received - start")
                 # Start this device
                 # No action, device is already running.
-                task.respond({"status":self.set_status})
-                
-                self.taskboard.remove(task)
+                self.task.respond({"status":self.set_status})
+                self.router.process_task(self.task)
+                self.task = None
+                #self.taskboard.remove(task)
 
     
             if command == "terminate":
@@ -480,8 +591,10 @@ class GenericUnit(object):
                 # this, as will fall-back 
                 # process in other units.
                 self.set_status("terminated")
-                task.respond({"status":self.set_status})
-                self.taskboard.remove(task)
+                self.task.respond({"status":self.set_status})
+                self.router.process_task(self.task)
+                self.task = None
+                #self.taskboard.remove(task)
     
     
             if command ==  "clone":
@@ -491,8 +604,11 @@ class GenericUnit(object):
                 # not possible for hardware units
                 response = {"success":False,
                             "unit_id":None}
-                task.respond(response)
-                self.taskboard.remove(task)
+                self.task.respond(response)
+                self.router.process_task(self.task)
+                self.task = None
+                
+                #self.taskboard.remove(task)
                 self.set_status("ready")
                 
                 #<< Unit specific code>>
@@ -504,21 +620,31 @@ class GenericUnit(object):
                 # Update configuration in persistent
                 # memory to received setting
                 self.configuration.patch(instruction)
-                self.taskboard.remove(task)                    
+                response = {"success":True}
+                self.task.respond(response)
+                self.router.process_task(self.task)
+                self.task = None
+                
+                #self.taskboard.remove(task)                    
                 self.set_status("new")
 
             if command == "configuration":
                 logging.debug("Command received - configuration")               
                 # Respond with this units configuration
-                task.respond(self.configuration.unit_config)
+                self.task.respond(self.configuration.unit_config)
+                self.router.process_task(self.task)
+                self.task = None
+                
                 self.set_status("ready")
     
             if command == "output": 
                 logging.debug("Command received - output")
                 # respond with Memory ie (horizon) history and forecast
                 # Provides Memory of output
-                task.respond(self.memory.json())
-                self.taskboard.remove(task)
+                self.task.respond(self.memory.json())
+                #self.taskboard.remove(task)
+                self.router.process_task(self.task)
+                self.task = None
                 self.set_status("ready")
                 
             if command == "memory":
@@ -528,13 +654,18 @@ class GenericUnit(object):
                 # to all devices.  If it is a memory unit the memory is updated, for
                 # other units it resets the unit memory.             
                 self.memory.replace(instruction)
-                self.taskboard.remove(task)
+                response = {"success":True}
+                self.task.respond(response)
+                self.router.process_task(self.task)
+                self.task = None
                         
             
             # Get any announcements for input_ids
             # Need to figure out how to handle this
 
     def get_task(self):
+        print "TASKBOARD"
+        self.taskboard.debug()
 
         logging.info("get_task %s", self.description)
         logging.debug("get_task() - status %s", self.status)
@@ -564,35 +695,7 @@ class GenericUnit(object):
         print "function:   ",self.function
         print "status:     ",self.status
         print
-    
-    
 
-#class TypicalInputUnit(GenericUnit):
-#    def process (self):
-#        # self.get_task()
-#      # self.update_memory(### observation/sensor data ####)
-#    def unit_startup (self):
-#        # Specific start-up requirements
-
-#class TypicaProcessUnit(GenericUnit):     
-#    def process (self):
-#        # self.getask()
-#        # if not self.taskboard.isResponse(self.set_id):
-#        #     return
-#      # Perform some function on 
-#        # self.taskboard.response(task_id, response)
-#    def unit_startup (self):
-#        # Specific start-up requirements
-
-#class TypicaOutputUnit(GenericUnit):     
-#    def process (self):
-#        # self.get_task()
-#        # if not self.taskboard.isResponse(self.set_id):
-#        #     return
-#      # Perform some function on 
-#        # self.taskboard.response(task_id, response)
-#    def unit_startup (self):
-#        # Specific start-up requirements
 
 class MemoryUnit(GenericUnit):
     def process(self):

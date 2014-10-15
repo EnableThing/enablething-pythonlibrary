@@ -15,17 +15,19 @@ class PheromoneTable(object):
     def __init__(self):
         self.q = 1
         self.min_goodness = 0.001
-        self.last_update = None
+        self.last_update = time.time()
         self.persistence = 0.001
         self.goodness = defaultdict(dict)
     
     def reinforce(self, destination, neighbour, length):
+        if length == 0:
+            return
         # Add Q/L (where L is the number of steps to 
         # the destination or cummulative trip time)
         try:
-            self.goodness[destination][neighbour] += q / length
+            self.goodness[destination][neighbour] += self.q / length
         except KeyError:
-            self.goodness[destination][neighbour] = q / length
+            self.goodness[destination][neighbour] = self.q / length
 
     def update(self):
         elapsed_time = time.time() - self.last_update
@@ -89,45 +91,53 @@ class NeighbourTable(object):
 
     
 class Router(object):
-    def __init__(self, unit_id):
+    def __init__(self, unit_id,taskboard):
         self.pheromone = PheromoneTable()
         self.neighbours = NeighbourTable()
         self.unit_id = unit_id
-        self.chronicle = None
+        #self.chronicle = None
+        self.taskboard = taskboard
 
 
     def kill(self):
         # Don't pass the packet on
         pass
 
-    def forward_ant(self):
+    def forward_ant(self,task):
         # forward ant
         # check pheromone table and route to best neighbour or multicast
         try:
-            self.forward(self.pheromone.best_neighbour(self.to_unit))
+            self.forward(self.pheromone.best_neighbour(task.to_unit))
         except KeyError:
             # Not found, so multi-cast to all units
             self.forward()
 
-    def backward_ant(self):
+    def backward_ant(self,task):
         # 'backward ant' retracing its steps
         # check chronicle and route back along route
-        neighbour = self.chronicle.previous()
-        destination = self.task.to_unit
+        neighbour = task.chronicle_manager.previous(self.unit_id)
+        print "neighbour", neighbour
+        destination = task.to_unit
 
         # Reinforce pheromone table T goodness for neighbour, destination
-        self.pheromone.reinforce(destination, neighbour)
+        
+        # Calculate length
+        time_ms = task.chronicle_manager.length()
+        
+        self.pheromone.reinforce(destination, neighbour, time_ms)
         '''delete message from taskboard'''
 
-    def route_message(self):
+    def route_message(self,task):
         if task.response == {}:
-            self.forward_ant()
+            self.forward_ant(task)
         else:
-            self.backward_ant()
+            self.backward_ant(task)
             
     
 
-    def receive_task(self,task):
+    def process_task(self, task):
+        print "process_task"
+        print "task>", task.json()
         
         #task = self.incoming()
         if task == None:
@@ -140,11 +150,11 @@ class Router(object):
         # Find out where the message came from and
         # update the Neighbour table.
         # Even if it comes from 'radio' the unit sending it is a neighbour
-        neighbour = self.chronicle.last()
+        neighbour = task.chronicle_manager.last()
         self.neighbours.update(neighbour)
 
         # Check for a loop in chronicle
-        if self.chronicle.isLoop():
+        if task.chronicle_manager.isLoop():
             return
 
         # Debatable: TTL kill messages if they are too old.
@@ -152,13 +162,29 @@ class Router(object):
         '''if chronicle life > TTL:
             return'''
 
-        '''add message to task board'''
-        # By adding message to task board, unit will process messages addressed
-        # to it, so no further action needed to "process" message here.
+        print "taskboard"
+        self.taskboard.debug()
+        if task.to_unit == self.unit_id or task.from_unit == self.unit_id:
+            '''add message to task board'''
+            # By adding message to task board, unit will process messages addressed
+            # to it, so no further action needed to "process" message here.
+            try:
 
-        ''' if message is not addressed to this unit:
-            append chronicle
-            route message  '''
+                self.taskboard.respond(task)
+                print "Task found"
+                
+                #return request.response(("Task "+ task.task_id + "updated successfully"))
+            except (LookupError, ValueError):
+                # Means that an existing task was not found
+                print "Task not found"
+                self.taskboard.add(task)
+                #return request.response(("Task " + task.task_id + "added"))
+        else:
+            ''' if message is not addressed to this unit:
+                append chronicle
+                route message  '''
+            self.route_message(task)
+    
 
 
 

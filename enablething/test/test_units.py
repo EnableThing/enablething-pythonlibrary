@@ -11,9 +11,8 @@ import unittest
 
 from .. import unit
 from .. import unit_custom
-from .. import taskboard_interface
 from .. import taskobj
-from .. import configmanage
+from .. import config
 from .. import jsonschema
 
 # create logger
@@ -115,7 +114,7 @@ class Test_Taskboard(unittest.TestCase):
         unit_specific =  {
                           "configurable": {
                                            "url": "http://api.wunderground.com/api/",
-                                           "key": "PASSWORD",
+                                           "key": "51e4897db8b4aa29",
                                            "feature": "conditions",
                                            "query": "CYVR",
                                            },

@@ -21,6 +21,8 @@ Features:
 Dependencies: Python 2.6.
 '''
 
+print "RESTlite"
+
 from wsgiref.util import setup_testing_defaults
 from xml.dom import minidom
 import os, re, sys, sqlite3, json, Cookie, base64, md5, time, traceback
@@ -237,16 +239,17 @@ def resource(func):
     >>> print files(env, start_response)
     ['<files><file>myfile.txt</file></files>']
     ''' 
+    
     method_funcs = func()
     if method_funcs is None:
         raise Status, '500 No "return locals()" in the definition of resource "%r"'%(func.__name__)
-    def handler(env, start_response):
+    def handler(self, env, start_response):
         if env['REQUEST_METHOD'] not in method_funcs:
             raise Status, '405 Method Not Allowed'
 
         req = Request(env, start_response)
         if env['REQUEST_METHOD'] in ('GET', 'HEAD', 'DELETE'):
-            result = method_funcs[env['REQUEST_METHOD']](req)
+            result = method_funcs[env['REQUEST_METHOD']](self, req)
         elif env['REQUEST_METHOD'] in ('POST', 'PUT'):
             if 'BODY' not in env:
                 try: env['BODY'] = env['wsgi.input'].read(int(env['CONTENT_LENGTH']))
@@ -254,7 +257,7 @@ def resource(func):
             if env['CONTENT_TYPE'].lower() == 'application/json' and env['BODY']: 
                 try: env['BODY'] = json.loads(env['BODY'])
                 except: raise Status, '400 Invalid JSON content'
-            result = method_funcs[env['REQUEST_METHOD']](req, env['BODY'])
+            result = method_funcs[env['REQUEST_METHOD']](self, req, env['BODY'])
         return [result] if result is not None else []
     return handler
 

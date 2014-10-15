@@ -45,6 +45,19 @@
 									"required":true,
 									"additionalProperties":false,
 									"properties":{
+										"neighbours": {
+											"type":"array",
+											"id": "http://jsonschema.net/unit/device_0/common/configurable/fallback_UUIDs",
+											"required":true,
+											"items":
+												{
+													"type":"string",
+													"id": "http://jsonschema.net/unit/device_0/common/configurable/fallback_UUIDs/0",
+													"required":false
+												}
+											
+
+										},
 										"communication": {
 											"type":"object",
 											"id": "http://jsonschema.net/unit/device_0/common/configurable/communication",
@@ -152,6 +165,11 @@
 											"required":true
 										},
 										"unit_id": {
+											"type":"string",
+											"id": "http://jsonschema.net/unit/device_0/common/non-configurable/unit_id",
+											"required":true
+										},
+										"method": {
 											"type":"string",
 											"id": "http://jsonschema.net/unit/device_0/common/non-configurable/unit_id",
 											"required":true

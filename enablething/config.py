@@ -32,7 +32,7 @@ def load_schema(file_name = 'schema.json'):
     return configuration
     print configuration
 
-def load_json(file_name = 'default_unit_config.json'):
+def load_json(file_name = ''):
     with open(file_name, 'r') as f:
         configuration = json.load(f)    
     return configuration
@@ -42,7 +42,7 @@ def load_json(file_name = 'default_unit_config.json'):
 class UnitConfiguration(object):
     def __init__(self,unit_config):
         self.unit_config = unit_config
-        self.schema = load_schema('../schema/thingschema.json')
+        self.schema = load_schema('schema/thingschema.json')
         #print "self.schema", self.schema
         #print "test", {"unit":{"device_0":self.unit_config}}
 
@@ -53,7 +53,7 @@ class UnitConfiguration(object):
             validate(self.unit_config, self.schema['properties']['units']['items'])
         except jsonschema.ValidationError:
             print "ValidationError"
-            self.unit_config = load_json()
+            self.unit_config = load_json('config.json')
             self.unit_config['common']['non-configurable']['last_error'] = "Config error"
             #raise ValidationError
         #print self.unit_config
@@ -85,7 +85,7 @@ class UnitConfiguration(object):
 class ThingConfiguration(object):
     def __init__(self):
         self.config = None
-        self.schema = load_schema('../schema/thingschema.json')
+        self.schema = load_schema('schema/thingschema.json')
         self.units = []
         self.load()
         
@@ -94,13 +94,13 @@ class ThingConfiguration(object):
         for unit in self.config['units']:
             self.units.append(UnitConfiguration(unit))
     
-    def load(self, file_name = '../thing/config.json'):
+    def load(self, file_name = 'config.json'):
         with open(file_name, 'r') as f:
             self.config = json.load(f)    
         #self.config = configuration
         return self.config
     
-    def save(self, file_name = '../thing/config.json'):        
+    def save(self, file_name = 'config.json'):        
         with open(file_name, 'w') as outfile:
             json.dump(self.config, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
 
@@ -136,32 +136,7 @@ class ThingConfiguration(object):
         return value
     
 
-                
-
-# def configure_unit(unit_setup = unit.GenericUnit, unit_id = None, input_ids = [], update_cycle = 5, description = "Generic unit"):
-#     if unit_id == None:
-#         unit_id = uuid.uuid4().hex
-#     # Load GUID list from configuration in GUID list
-#     patch_config = {
-#                         "common": {
-#                             "configurable": {
-#                                 "input_UUIDs": input_ids,
-#                                 "update_cycle": update_cycle,
-#                                 },                      
-#                             "non-configurable": {
-#                                 "unit_id": unit_id,
-#                                 "description": description
-#                                 }
-#                             },
-#                     }
-#     
-#     if unit_specific == None:
-#         pass
-#     else:
-#         unit_config['unit_specific'] = unit_specific  
-#     return unit.unit_setup(unit_config)
-
-
+ 
 def main():
     c = ThingConfiguration()
     #unit_config = c.units[0].unit_config

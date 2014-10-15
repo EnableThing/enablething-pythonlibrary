@@ -2,10 +2,10 @@
 import time, datetime
 from email import utils
 from jsonschema import validate
+import jsonschema
 
-import taskboard_interface
-import configmanage
-
+import config
+import uuid
 import logging
 
 def create_timestamp(dt = None):
@@ -59,7 +59,7 @@ class Memory(object):
                            }
         self.history = []
         self.forecast = []
-        self.schema = configmanage.load_schema('../schema/memoryschema.json')  
+        self.schema = config.load_schema('schema/memoryschema.json')  
 
 
     def add(self, data, time_stamp = None):
@@ -153,7 +153,11 @@ class Chronicle(object):
 # 
 #         for item in self.chronicle:
 #             self.visited_uuids.append(item["unit_id"])
-
+    def isLoop(self):
+        print "isLoop"
+        # Not implemented
+        return False
+    
     def last(self):
         return self.chronicle[-1]["unit_id"]
         
@@ -179,6 +183,14 @@ class Chronicle(object):
         self.chronicle.append({"hop":self.hops + 1, "unit_id": self.unit_id, "time_ms": 1000*round(elapsed_time,3)})
         #self.task.update(chronicle = updated_chronicle)    
 
+    def length(self):
+        l = 0
+        for item in self.chronicle:
+            l = l + item['time_ms']
+        print "lenght",l
+        return l
+
+
     def json(self):
         json_dict = self.chronicle
         
@@ -199,6 +211,15 @@ class Task(object):
             }
 
         options.update(kwargs)
+        command_schema = config.load_schema('schema/taskschema.json')
+        
+        print "opyions",options
+        
+        try:
+            validate(options, command_schema)
+        except jsonschema.ValidationError:
+            print "ValidationError"
+            raise
         
               
         for key, value in options.iteritems():
@@ -215,12 +236,14 @@ class Task(object):
             # We are creating a task that does not
             # already exists on the master board, so
             # post it and get task_id number.
-            if self.chronicle == []:
-                self.chronicle_manager.update()
-            t = self.json()
-            r = taskboard_interface.post_task(t)
-            
-            self.task_id = r['task_id']
+            self.task_id = uuid.uuid4().hex
+        
+            # We are creating a task that does not
+            # already exists on the master board, so
+            # post it and get task_id number.
+            #if self.chronicle == []:
+                
+        self.chronicle_manager.update()
         
         self.json()
         
@@ -259,7 +282,7 @@ class Task(object):
 
         self.json()
 
-        taskboard_interface.patch_task(self.task_id,json_dict)
+        #taskboard_interface.patch_task(self.task_id,json_dict)
 
     def progress(self):
         self.update(board = 'In progress')
@@ -267,14 +290,15 @@ class Task(object):
     def respond(self, response):
         self.update(response = response, board = 'Complete')
 
-    def listen_for_response (self):
-        #Check the message board for a command sent to task_id
-        # It will be a task that is Complete
-        task = taskboard_interface.get_task(self.task_id)
-        print "listen_for_response() task['response']", task['response']      
-        if task['response'] <> {}:
-            self.update(response = task['response'])
-        print "listen_for_response() self.response",self.response
+#     def listen_for_response (self):
+#         #Check the message board for a command sent to task_id
+#         # It will be a task that is Complete
+#         #task = taskboard_interface.get_task(self.task_id)
+#         
+#         print "listen_for_response() task['response']", self.task['response']      
+#         if self.task['response'] <> {}:
+#             self.update(response = self.task['response'])
+#         print "listen_for_response() self.response",self.response
     
     def isResponse(self):
         self.listen_for_response()

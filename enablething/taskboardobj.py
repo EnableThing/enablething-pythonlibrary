@@ -1,6 +1,6 @@
 import logging
 import taskobj
-import taskboard_interface
+#import taskboard_interface
 
 class Taskboard(object):
     # Implement an internal task board for managing tasks, adding, removing, 
@@ -32,7 +32,14 @@ class Taskboard(object):
 
 
     def add(self, task):
-        self.tasks.insert(0, task)
+
+        try:
+            task = self.find_task(task.task_id)
+        except LookupError:
+            self.tasks.insert(0, task)
+            return
+        
+        raise Exception("An existing task with that task id was found")
 
 #     def update(self, task_id):
 #         task = self.find_task(task_id)
@@ -66,53 +73,55 @@ class Taskboard(object):
         for q in self.tasks:
                 q.print_console()
 
-    def request (self, to_id, command):
+#    def request (self, to_id, command):
         # Takes a dict command and creates a new task.
         # Generate a new task with a new UUID for the task
-        task = taskobj.Task(unit_id = self.unit_id, command = command, from_unit = self.from_unit, to_unit = to_id)
+#        task = taskobj.Task(unit_id = self.unit_id, command = command, from_unit = self.from_unit, to_unit = to_id)
 
-        # Add task_uuid to array live_tasks.
-        self.add(task)
-        self.status = "waiting"
-
+#        # Add task_uuid to array live_tasks.
+#        self.add(task)
+#        self.status = "waiting"
+#
         return task
 
-    def respond (self, task_id, response):
+    def respond (self, task):
 
-        task = self.find_task(task_id)
+        #task_id
+        if task.response == {}:
+            raise ValueError("Response is empty")
+
+        task.update(board = 'Complete')
+
+        #task = self.find_task(task.task_id)
         # Check this
         # http://stackoverflow.com/questions/10858575/find-object-by-its-member-inside-a-list-in-python 
-        task.update(response = response, board='Complete')
+        #task.update(response = task.response, board='Complete')
         #task.respond(response)
+        index=-1
+        for t in self.tasks:
+            index=index+1
+            if t.task_id == task.task_id:
+                if t.response == {}:
+                    print "Exisitng response is blank"
+                    t = task
+                    self.tasks[index] = task
+                    return
+                else:
+                    raise LookupError("Task already has a response")
+                return
+            
+        raise LookupError("Task lookup returned no tasks")
 
-        # Remove this task from the task board
 
-        self.status = "ready"
-
-    def get_new_tasks(self, unit_id):
-        new_tasks = []
-        #Check the message board for a new command sent to UUID
-        returned_tasks = taskboard_interface.get_new_tasks(unit_id)
-
-        
-        for returned_task in returned_tasks:
-            task_id = returned_task['task_id']
-
-            if returned_task['board'] == 'Backlog':
-                try:
-                    task = self.taskboard.find_task(task_id)
-                    # Task exists already, don't take any action because it is still on the Backlog
-                except:
-                    # Task does not exist
-                    task = taskobj.Task(unit_id = self.unit_id, **returned_task)
-                    
-                    task.update(board = 'In progress')
-                    if len(task.command)>1:
-                        raise Exception, "Too many keys in command"                    
-                    new_tasks.append(task_id)
-                    self.add(task)
-                
-        return new_tasks
+    def get_new_task(self):
+        # Return 
+        for task in self.tasks:
+            if task.to_unit == self.unit_id and task.board == 'Backlog':
+                assert(task.response == {})
+                task.board = 'In progress'
+                return task
+                        
+        return None
     
 
                 
