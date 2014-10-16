@@ -9,23 +9,25 @@ import logging
 from random import randrange
 import unittest
 
-from .. import unit
-from .. import unit_custom
-from .. import taskobj
-from .. import config
-from .. import jsonschema
+from enablething import unit
+from enablething import unit_core
+from enablething import unit_custom
+from enablething.task import Task
+from enablething import config
+from enablething import jsonschema
 
 # create logger
 logging.basicConfig(filename='log.log',level=logging.DEBUG)
        
 
-def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = None, input_ids = [], update_cycle = 5, description = "Generic unit"):
+def configure_unit(unit_setup = unit_core.GenericUnit, unit_specific = None, id = None, input_ids = [], update_cycle = 5, description = "Generic unit", neighbours = []):
     if id == None:
         id = uuid.uuid4().hex
     # Load GUID list from configuration in GUID list
     unit_config = {
                         "common": {
                             "configurable": {
+                                "neighbours" : neighbours,
                                 "fallback_UUIDs": [],
                                 "input_UUIDs": input_ids,
                                 "memory_UUID": "g",
@@ -45,7 +47,8 @@ def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = Non
                                 "description": description,
                                 "function": "display",
                                 "status": "ready",
-                                "last_error": "OK"
+                                "last_error": "OK",
+                                "method" : str(unit_setup)
                                 }
                             },
                          "unit_specific": {
@@ -60,8 +63,7 @@ def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = Non
     else:
         unit_config['unit_specific'] = unit_specific
   
-    return unit_setup(unit_config)
-
+    return unit_setup(id, unit_config)
 
 
 class Test_Taskboard(unittest.TestCase):
@@ -80,21 +82,32 @@ class Test_Taskboard(unittest.TestCase):
 
     #unittest.skip("Skip")
     def test_response_chain(self):
-        inputunit = configure_unit(unit_setup = unit.ClockUnit, input_ids = [], update_cycle = 0, description = "Clock unit")
-        processunit = configure_unit(unit_setup = unit.PassThruUnit, input_ids = [inputunit.id], update_cycle = 0, description = "Pass-through unit")
-        outputunit = configure_unit(unit_setup = unit_custom.charOutputUnit, input_ids = [processunit.id], update_cycle = 0, description = "Output unit")
+        inputunit_id = uuid.uuid4().hex
+        processunit_id = uuid.uuid4().hex
+        outputunit_id = uuid.uuid4().hex
+        
+        inputunit = configure_unit(id = inputunit_id, unit_setup = unit_core.ClockUnit, input_ids = [], update_cycle = 0, description = "Clock unit", neighbours=[processunit_id, outputunit_id])
+        processunit = configure_unit(id =processunit_id, unit_setup = unit_core.PassThruUnit, input_ids = [inputunit_id], update_cycle = 0, description = "Pass-through unit",  neighbours=[inputunit_id, outputunit_id])
+        outputunit = configure_unit(id = outputunit_id, 
+                                    unit_setup = unit_custom.charOutputUnit, 
+                                    input_ids = [processunit_id], 
+                                    update_cycle = 0, 
+                                    description = "Output unit",  
+                                    neighbours=[processunit_id, inputunit_id])
 
         for __ in xrange(10):
-            inputunit.get_task()
-            processunit.get_task()
-            outputunit.get_task()
-                          
+            inputunit.update()
+            processunit.update()
+            outputunit.update()
+            
+        print outputunit.taskboard.debug()
+        print "outputunit.memory.history[0].data",outputunit.memory.history[0].data
         self.assertTrue('time' in outputunit.memory.history[0].data)    
 
     def test_SimpleForecastUnit(self):
-        inputunit = configure_unit(unit_setup = unit.GenericUnit, input_ids = [], update_cycle = 0, description = "Input unit - clock")
+        inputunit = configure_unit(unit_setup = unit_core.GenericUnit, input_ids = [], update_cycle = 0, description = "Input unit - clock")
         print "INPUTUNIT.ID", inputunit.id
-        processunit = configure_unit(unit_setup = unit.SimpleForecastUnit, input_ids = [inputunit.id], update_cycle = 0, description = "PassThruUnit unit")
+        processunit = configure_unit(unit_setup = unit_core.SimpleForecastUnit, input_ids = [inputunit.id], update_cycle = 0, description = "PassThruUnit unit")
         print "PROCESSUNIT.ID", processunit.id
         # Process announces
 
@@ -109,12 +122,12 @@ class Test_Taskboard(unittest.TestCase):
         self.assertTrue('dummy_reading' in processunit.memory.forecast[3].data)
  
         
-    @unittest.skip("Skip")
+    #unittest.skip("Skip")
     def test_weatherInputUnit(self):
         unit_specific =  {
                           "configurable": {
                                            "url": "http://api.wunderground.com/api/",
-                                           "key": "51e4897db8b4aa29",
+                                           "key": "PAXSWORD",
                                            "feature": "conditions",
                                            "query": "CYVR",
                                            },
@@ -122,8 +135,10 @@ class Test_Taskboard(unittest.TestCase):
                           }
         weatherunit = configure_unit(unit_setup = unit_custom.weatherInputUnit, unit_specific = unit_specific, input_ids = [], update_cycle = 0, description = "Input unit - weather")
         for __ in xrange(10):
-            weatherunit.get_task()
+            weatherunit.update()
+            
         self.assertTrue('temp_c' in weatherunit.memory.history[0].data)
+        #self.assertTrue(False)
         
 
     def test_PassThruUnit(self):

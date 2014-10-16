@@ -1,7 +1,36 @@
 import logging
-import taskobj
+#import task
+from rest import RestClient
 #import taskboard_interface
 
+class WatchedTaskBoard(object):
+    def __init__(self, neighbour):
+        self.url = neighbour.url
+        self.unit_id = neighbour.unit_id
+        self.rest = RestClient(url, unit_id)
+
+class Watch(object):
+    def __init__(self):
+        
+        self.watched_taskboards = []
+        
+    def add_taskboard(self,neighbour):
+        # neighbour is a class containing information about the
+        # neighbour, including the url and unit_id
+        
+        self.watched_taskboards.append(WatchedTaskBoard(neighbour))
+    
+    def get_new_responses(self):
+        for watched_taskboard in self.watch_taskboards:
+            watched_taskboard.rest.get_new_commands()
+            watched_taskboard.rest.get_new_responses()
+    
+    def remove_taskboard(self):
+        raise NotImplemented
+        
+    
+
+    
 class Taskboard(object):
     # Implement an internal task board for managing tasks, adding, removing, 
     # and requesting new tasks from primary task board.
@@ -11,6 +40,7 @@ class Taskboard(object):
         self.from_unit = unit_id
         self.unit_id = unit_id
         self.last_removed = None
+        self.watch = Watch()
     
     def last_removed_task_id(self):
         return self.last_removed
@@ -89,8 +119,9 @@ class Taskboard(object):
         #task_id
         if task.response == {}:
             raise ValueError("Response is empty")
-
-        task.update(board = 'Complete')
+        
+        ''' Removed this but need to think about it '''
+        #task.add_response(board = 'Pending')
 
         #task = self.find_task(task.task_id)
         # Check this
@@ -113,15 +144,15 @@ class Taskboard(object):
         raise LookupError("Task lookup returned no tasks")
 
 
-    def get_new_task(self):
-        # Return 
-        for task in self.tasks:
-            if task.to_unit == self.unit_id and task.board == 'Backlog':
-                assert(task.response == {})
-                task.board = 'In progress'
-                return task
-                        
-        return None
+#     def get_new_task(self):
+#         # Return 
+#         for task in self.tasks:
+#             if task.to_unit == self.unit_id and task.board == 'Backlog':
+#                 assert(task.response == {})
+#                 task.board = 'Response'
+#                 return task
+#                         
+#         return None
     
 
                 

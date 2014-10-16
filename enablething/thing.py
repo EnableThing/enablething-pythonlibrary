@@ -2,7 +2,7 @@ from wsgiref.simple_server import make_server
 
 from restlite import restlite
 
-import unit
+import unit_core
 import unit_custom
 import config
 
@@ -17,24 +17,28 @@ class UnitHandler(object):
     def configure(self):
         # Instantiate new_unit depending on unit_class
         configuration = config.ThingConfiguration().load("config.json")
+        thing_url = configuration["thing"]["url"]
         self.unit_set = []
         for unit_config in configuration["units"]:
             unit_id = unit_config["common"]["non_configurable"]["unit_id"]
             try:
-                f = unit_config["common"]['non_configurable']['method']    
+                f = unit_config["common"]['non_configurable']['method'] 
+   
                 unit_module = unit_config["common"]['non_configurable']['method'].split(".")[0]
                 unit_method = unit_config["common"]['non_configurable']['method'].split(".")[1]
             except IndexError:
                 errornote = "Unit " +unit_id + " method " + f + " is not valid"
                 raise Exception(errornote)
     
-            valid_modules = {"unit":unit, "unit_custom":unit_custom}
+            valid_modules = {"unit_core":unit_core, "unit_custom":unit_custom}
             
             try:
+
                 methodToCall = getattr(valid_modules[unit_module], unit_method)
-                new_unit = methodToCall(unit_config)
+                new_unit = methodToCall(thing_url, unit_config)
+
             except AttributeError:
-                errornote = "Unit " + unit_id + " module " + unit_module + " does not have a method "+ unit_method
+                errornote = "Unit " + unit_id + " module " + unit_module + " does not have a method "+ unit_method 
                 raise Exception(errornote)
             except KeyError:
                 errornote = "Unit " + unit_id + " module " + unit_module + " is not unit or unit_custom"
@@ -44,7 +48,7 @@ class UnitHandler(object):
         
     def request_update(self):
         for unit in self.unit_set:
-            unit.get_task()
+            unit.update()
 
 class RestHandler(object):
     def __init__(self):
@@ -58,7 +62,7 @@ class RestHandler(object):
         for u in unit_set:
             self.routes.append((r'GET /unit/'+str(u.unit_id)+'/task/(?P<task_id>.*)' , u.rest.get_task))
         for u in unit_set:
-            self.routes.append((r'GET /unit/'+str(u.unit_id)+'/tasks/(?P<filter_string>.*)' , u.rest.tasklistfilter))          
+            self.routes.append((r'GET /unit/'+str(u.unit_id)+'/tasks(?P<filter_string>.*)' , u.rest.tasklistfilter))          
         for u in unit_set:
             self.routes.append((r'GET,POST /unit/'+str(u.unit_id) , u.rest.rest_unit))
         
@@ -75,13 +79,13 @@ class RestHandler(object):
             self.config.save()
             return request.response(("Thing configuration updated successfully"))
             
-            
         return locals()
 
 
 def main():  
     unit_handler = UnitHandler()
     rest_handler = RestHandler()
+    
     unit_handler.configure()
     rest_handler.configure(unit_handler.unit_set)
     

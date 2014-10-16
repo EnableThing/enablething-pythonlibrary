@@ -39,7 +39,7 @@ import logging
 #    def unit_startup (self):
 #        # Specific start-up requirements
 
-class MemoryUnit(unit.GenericUnit):
+class MemoryUnit(unit.BaseUnit):
     def process(self):
         # No process
         pass
@@ -49,7 +49,7 @@ class MemoryUnit(unit.GenericUnit):
     
 
 
-class charOutputUnit(unit.GenericUnit):
+class charOutputUnit(unit.BaseUnit):
     def display_interface(self,text):
         print "--- 16char DISPLAY ---"
         s = text[0:16] + "/n" + text[16:32]
@@ -79,7 +79,7 @@ class charOutputUnit(unit.GenericUnit):
         #self.memory.history = 
         #self.memory.forecast = self.inputboard.input_container[0].forecast
   
-class weatherInputUnit(unit.GenericUnit):
+class weatherInputUnit(unit.BaseUnit):
     def display_interface(self,text):
         print "--- 16char DISPLAY ---"
         s = text[0:16] + "/n" + text[16:32]

@@ -10,7 +10,7 @@
             "required": true,
             "enum": [
                 "Complete",
-                "In progress",
+                "Response",
                 "Backlog"
             ]
         },

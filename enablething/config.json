@@ -1,7 +1,8 @@
 {
     "thing": {
         "last_change_time": "", 
-        "last_config_outcome": "alejandra asked what is going on"
+        "last_config_outcome": "alejandra asked what is going on",
+        "url" : "http://127.0.0.1"
     }, 
     "units": [
             {
@@ -33,7 +34,7 @@
                     "last_error": "OK", 
                     "status": "ready", 
                     "unit_id": "3c82ef61-0875-41d3-99ba-101672d79d6b",
-                    "method":"unit.GenericUnit"
+                    "method":"unit_core.GenericUnit"
                 }
             }, 
             "unit_specific": {
@@ -70,7 +71,7 @@
                     "last_error": "OK", 
                     "status": "ready", 
                     "unit_id": "caf01485-3bb1-4337-a023-5ffc03bf073b",
-                    "method": "unit.GenericUnit"
+                    "method": "unit_core.GenericUnit"
                 }
             }, 
             "unit_specific": {
@@ -109,7 +110,7 @@
                     "last_error": "OK", 
                     "status": "ready", 
                     "unit_id": "0d2a1089-be8e-4216-96b6-46552d367091",
-                    "method": "unit.PassThruUnit"
+                    "method": "unit_core.PassThruUnit"
                 }
             }, 
             "unit_specific": {
@@ -146,7 +147,7 @@
                     "last_error": "OK", 
                     "status": "ready", 
                     "unit_id": "a789ada1-edb5-4cfe-b1f9-8584abbf8a2f",
-                    "method" : "unit.ClockUnit"
+                    "method" : "unit_core.ClockUnit"
                 }
             }, 
             "unit_specific": {

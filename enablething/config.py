@@ -1,4 +1,4 @@
-import unit
+#import unit
 import jsonschema
 import json
 import uuid
@@ -26,7 +26,7 @@ def setInDict(dataDict, mapList, value):
     getFromDict(dataDict, mapList[:-1])[mapList[-1]] = value
     
     
-def load_schema(file_name = 'schema.json'):
+def load_schema(file_name = ''):
     with open(file_name, 'r') as f:
         configuration = json.load(f)    
     return configuration
@@ -52,6 +52,7 @@ class UnitConfiguration(object):
             #validate(test, self.schema)
             validate(self.unit_config, self.schema['properties']['units']['items'])
         except jsonschema.ValidationError:
+            raise
             print "ValidationError"
             self.unit_config = load_json('config.json')
             self.unit_config['common']['non-configurable']['last_error'] = "Config error"

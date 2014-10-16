@@ -20,7 +20,12 @@
 					"type":"string",
 					"id": "http://jsonschema.net/device/last_config_outcome",
 					"required":true
-				}
+				},
+				"url": {
+					"type":"string",
+					"id": "http://jsonschema.net/device/last_config_outcome",
+					"required":true
+					}
 			}
 		},
 		"units": {

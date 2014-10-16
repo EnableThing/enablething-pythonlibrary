@@ -1,12 +1,14 @@
 
-import time, datetime
+import time
+import datetime
 from email import utils
-from jsonschema import validate
+import uuid
+import logging
+
+from jsonschema import validate, ValidationError
 import jsonschema
 
 import config
-import uuid
-import logging
 
 def create_timestamp(dt = None):
     # "local_time_rfc822":"Tue, 23 Sep 2014 18:19:54 -0700"
@@ -32,23 +34,13 @@ class DataPoint(object):
             time_stamp = create_timestamp()
         self.time_stamp = time_stamp
         self.data = data
-#         
-#     def create_timestamp(self):
-#         # "local_time_rfc822":"Tue, 23 Sep 2014 18:19:54 -0700"
-#         nowdt = datetime.datetime.now()
-#         nowtuple = nowdt.timetuple()
-#         nowtimestamp = time.mktime(nowtuple)
-#         utils.formatdate(nowtimestamp)
-#         return utils.formatdate(nowtimestamp)
-#         #return datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-#     
+     
     def json(self):
         # Create a dictionary
         json_dict = {
                 "time_stamp":self.time_stamp,
                 "data":self.data
                 }
-        print "DataPoint json()", json_dict
         return json_dict
     
 class Memory(object):
@@ -138,69 +130,104 @@ class Memory(object):
 
 class Chronicle(object):
     # Class to extract and write chronicle to message
-    def __init__(self, unit_id, chronicle):
-        self.unit_id = unit_id
-        self.start_time = time.time()
-        if chronicle == None or chronicle == []:
-            self.hops = 0
-            self.chronicle = []
-            self.update()
-        else:
-            self.hops = len(chronicle)
-            self.chronicle = chronicle
-        
-        self.visited_uuids = []
-# 
-#         for item in self.chronicle:
-#             self.visited_uuids.append(item["unit_id"])
-    def isLoop(self):
-        print "isLoop"
-        # Not implemented
+    def __init__(self):
+        self.chronicle_start_time = time.time()
+
+    def _subfinder(self,mylist, pattern):
+        #http://stackoverflow.com/questions/10106901/elegant-find-sub-list-in-list
+        matches = []
+        for i in range(len(mylist)):
+            if mylist[i] == pattern[0] and mylist[i:i+len(pattern)] == pattern:
+                matches.append(pattern)
+        return matches
+ 
+    def _longestrun(self, myList):
+        for n in xrange(2, len(myList)):
+            pattern = myList[-n:]
+            if len(self._subfinder(myList, pattern)) > 1:
+                return True
         return False
+               
+    def isLoop(self):
+        units = []
+        for chronicle in self.chronicle: 
+            units.append(chronicle['unit_id'])
+        return self._longestrun(units)
+
+    def find_units(self):
+        self.visited_uuids = []
+        for chronicle in self.chronicle:
+            visited_uuid = chronicle['unit_id']
+            if visited_uuid <> self.unit_id:
+                self.visited_uuids.append(visited_uuid)
+        return self.visited_uuids
+
+    def _current_hop(self):
+        hop = 0
+        for chronicle in self.chronicle:
+            if self.unit_id == chronicle['unit_id']:
+                if chronicle['hop'] > hop:
+                    hop = chronicle['hop']
+        if hop == 0:
+            raise LookupError("UUID not found")     
+        return hop
+        
+    def next_neighbour(self):
+        neighbour = None
+        hop = self._current_hop()
+        # The hop we need is the next one
+        hop = hop + 1
+        if hop > len(self.chronicle):
+            raise LookupError("Last unit")
+        
+        for chronicle in reversed(self.chronicle):
+            if chronicle['hop'] == hop:
+                neighbour = chronicle['unit_id']
+                return neighbour
     
-    def last(self):
-        return self.chronicle[-1]["unit_id"]
-        
-    def next(self, current_unit_id):
-        index = next(index for (index, d) in enumerate(self.chronicle) if d["unit_id"] == current_unit_id)
-        if index + 1 > len(self.chronicle):
-            raise LookupError("Lookup uuid is last in list")
-        # Return the next unit visited after 'current_unit_id'
-        
-        return self.chronicle[index + 1]["unit_id"]
-    
-    def previous(self, current_unit_id):
-        # Return the previous unit visited before 'current_unit_id'
-        # This allows the path back to the originating unit to be traced.
-        index = next(index for (index, d) in enumerate(self.chronicle) if d["unit_id"] == current_unit_id)
-        
-        if index == 0:
-            raise LookupError("Lookup UUID is first in list")
-        return self.chronicle[index - 1]["unit_id"]
+    def previous_neighbour(self):
+        neighbour = None
+        hop = self._current_hop()
+        # The hop we need is the previous one
+        hop = hop - 1
+        if hop == 0:
+            raise LookupError("First unit provided as lookup value")
+        for chronicle in reversed(self.chronicle):
+            if chronicle['hop'] == hop:
+                neighbour = chronicle['unit_id']
+                return neighbour
                 
-    def update(self):
-        elapsed_time = time.time() - self.start_time
-        self.chronicle.append({"hop":self.hops + 1, "unit_id": self.unit_id, "time_ms": 1000*round(elapsed_time,3)})
-        #self.task.update(chronicle = updated_chronicle)    
+    def add_chronicle(self):
+        elapsed_time = time.time() - self.chronicle_start_time     
+        hops = len(self.chronicle)
+        self.chronicle.append({"hop":hops + 1, "unit_id": self.unit_id, "time_ms": 1000*round(elapsed_time,3)})   
 
-    def length(self):
-        l = 0
+    def cost(self):
+        # Calculate "cost" of the chronicle record
+        cost = 0
         for item in self.chronicle:
-            l = l + item['time_ms']
-        print "lenght",l
-        return l
+            cost = cost + item['time_ms']
+        return cost
 
+    def validate_chronicle(self):
+        # Check for non-unique hop count
+        hops = []
+        for chronicle in self.chronicle:
+            hops.append(chronicle['hop'])
+        if len(hops)!=len(set(hops)): 
+            raise ValidationError("Chronicle hop count repeated")
+        if self.isLoop():
+            raise ValidationError("Chronicle UUIDs have a loop")
 
-    def json(self):
-        json_dict = self.chronicle
-        
-        return json_dict
+#     def json(self):
+#         json_dict = self.chronicle
+#         
+#         return json_dict
 
-       
-    
-class Task(object):
+ 
+class Task(Chronicle):
     def __init__(self, unit_id, **kwargs):
-        #self.start_time = time.time()
+        self.unit_id = unit_id
 
         options = {
             'task_id' : "",
@@ -221,15 +248,11 @@ class Task(object):
             print "ValidationError"
             raise
         
-              
         for key, value in options.iteritems():
             setattr(self,key, value)  
-
-                  
-        self.chronicle_manager = Chronicle(unit_id, self.chronicle)
         
         if self.command == "{}":
-            raise Exception("Cannot create a new task with a blank command")
+            raise ValueError("Cannot create a new task with a blank command")
         
         #t = self.json()
         if self.task_id == "":
@@ -243,7 +266,8 @@ class Task(object):
             # post it and get task_id number.
             #if self.chronicle == []:
                 
-        self.chronicle_manager.update()
+        self.validate_chronicle()
+            
         
         self.json()
         
@@ -261,44 +285,50 @@ class Task(object):
         
         return key.pop(), value.pop()
         
-    def get(self):
-        taskboard_interface.get_task(self.task_id)
-        task = taskboard_interface.get_task(self.task_id)
-
-        return task
-                           
-    def update(self, **kwargs):
+#     def get(self):
+#         taskboard_interface.get_task(self.task_id)
+#         task = taskboard_interface.get_task(self.task_id)
+# 
+#         return task
+    def validate_response(self, task, new_task):
+        mismatch = None
+        for key, value in task.iteritems():
+            if key <> "response":
+                try:
+                    if task[key] <> new_task[key]:
+                        mismatch = True
+                        raise ValidationError("Key " + key + " value " + str(task[key]) + " <> " + str(new_task[key]))
+                except KeyError:
+                    pass
+                
+            
+        
+                               
+    def add_response(self, **kwargs):
       
         # kwargs is a dictionary
         # this will require some form of validation to ensure only valid keys are created.  TBD.
+
+
+        # Check that the only difference is response
+        self.validate_response(self.json(), kwargs)
 
         json_dict = {}
         for key, value in kwargs.iteritems():
             json_dict[key] = value
             setattr(self,key, value)
         
+        # Do not modify task as it may be forwarded.
+        # Only let taskboard do this.
+        #if self.response <> {}:
+        #    self.board = 'Pending'
+        
         # Update chronicle with this units uuid and timer result    
-        self.chronicle_manager.update()      
+        #self.chronicle_manager.update()      
 
         self.json()
 
         #taskboard_interface.patch_task(self.task_id,json_dict)
-
-    def progress(self):
-        self.update(board = 'In progress')
-              
-    def respond(self, response):
-        self.update(response = response, board = 'Complete')
-
-#     def listen_for_response (self):
-#         #Check the message board for a command sent to task_id
-#         # It will be a task that is Complete
-#         #task = taskboard_interface.get_task(self.task_id)
-#         
-#         print "listen_for_response() task['response']", self.task['response']      
-#         if self.task['response'] <> {}:
-#             self.update(response = self.task['response'])
-#         print "listen_for_response() self.response",self.response
     
     def isResponse(self):
         self.listen_for_response()
@@ -306,9 +336,6 @@ class Task(object):
             return False
         else:
             return True
-
-    def print_console(self):       
-        print self.json()
         
     def json(self):
         # dumps ... dict to string
@@ -318,20 +345,15 @@ class Task(object):
                         "task_id" : self.task_id,
                         "title": "Blank",
                         "board": self.board, 
-                        "chronicle": self.chronicle_manager.json(),
+                        "chronicle": self.chronicle,
                         "from_unit": self.from_unit , 
                         "to_unit": self.to_unit , 
                         "command": self.command,
                         "response": self.response
                         }
         return task_dict
+    
     def debug(self):
-        print "  ",self.json()
-        #print "task id: ",self.task_id
-        #print "board:   ", self.board
-        #print "to:      ", self.to_unit
-        #print "from:    ", self.from_unit
-        #print "command: ", self.command
-        #print "response:", self.response
-        #print
+        print self.json()
+
 

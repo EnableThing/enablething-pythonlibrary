@@ -9,24 +9,26 @@ import logging
 from random import randrange
 import unittest
 
-from .. import unit
-from .. import unit_custom
-from .. import taskboard_interface
-from .. import configmanage
-from .. import jsonschema
-from .. import router
+from enablething import unit
+from enablething import unit_core
+from enablething import unit_custom
+#from enablething import taskboard_interface
+from enablething import config
+from enablething import jsonschema
+from enablething import router
 
 # create logger
 logging.basicConfig(filename='log.log',level=logging.DEBUG)
        
 
-def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = None, input_ids = [], update_cycle = 5, description = "Generic unit"):
+def configure_unit(unit_setup = unit_core.GenericUnit, unit_specific = None, id = None, input_ids = [], update_cycle = 5, description = "Generic unit", neighbours = []):
     if id == None:
         id = uuid.uuid4().hex
     # Load GUID list from configuration in GUID list
     unit_config = {
                         "common": {
                             "configurable": {
+                                "neighbours" : neighbours,
                                 "fallback_UUIDs": [],
                                 "input_UUIDs": input_ids,
                                 "memory_UUID": "g",
@@ -46,7 +48,8 @@ def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = Non
                                 "description": description,
                                 "function": "display",
                                 "status": "ready",
-                                "last_error": "OK"
+                                "last_error": "OK",
+                                "method" : str(unit_setup)
                                 }
                             },
                          "unit_specific": {
@@ -61,7 +64,7 @@ def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = Non
     else:
         unit_config['unit_specific'] = unit_specific
   
-    return unit_setup(unit_config)
+    return unit_setup(id, unit_config)
 
 
 

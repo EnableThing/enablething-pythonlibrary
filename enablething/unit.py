@@ -1,22 +1,22 @@
 ﻿#unit.py
 #Unit library
-
-
+import requests
+import json
 import uuid
 import re
-
-import config
-#import taskboard_interface
-import taskobj
-import taskboardobj
-import router
-#from datetime import datetime
-import json
-
 import logging
-
 import datetime
 import time
+
+import config
+import rest
+from task import Task, Memory
+from taskboard import Taskboard
+from router import RouterHandler
+#from datetime import datetime
+
+
+
 #from email import utils
 from jsonschema import validate
 
@@ -133,7 +133,7 @@ class Inputs(object):
         
         self.input_container = []
         for i in self.input_ids:
-            self.input_container.append(taskobj.Memory())
+            self.input_container.append(Memory())
 
         self.input_sets = []
 
@@ -221,96 +221,268 @@ class Inputs(object):
         for instance in self.input_sets:
             instance.debug()          
 
-class RestServer(object):
-    def __init__(self, unit_id, taskboard,router):
-        self.unit_id = unit_id
-        self.taskboard = taskboard
-        self.router = router
-            
-    @restlite.resource
-    def get_task():
-        def GET(self, request):
-            task_id = request['wsgiorg.routing_args']['task_id']
-            self.taskboard.debug()
-          
-            try:    
-                task = self.taskboard.find_task(task_id)
-            except LookupError:
-                raise restlite.Status, '400 Bad Request'
-                return request.response(("Requested Task " + task_id + " not present on this Unit or badly formed Task UUID"))
-            
-            if task.response == {}:
-                raise restlite.Status, '404 Not Found'
-                return request.response(("Requested Task" + task_id + " does not have a Response"))
-            
-            value = task.json().items()
-
-            return request.response((value))  
-        return locals()
-    
-    @restlite.resource
-    def tasklistfilter():
-        def GET(self, request):
-            # Respond to a GET request to /unit/<unit_id>/task with the 
-            # unit's current status
-            filter_string = request['wsgiorg.routing_args']['filter_string']
-            
-            value = []  
-            if filter_string == "":
-                value = []
-                for task in self.taskboard.tasks:
-                    value.append(task.json().items())
-                return request.response((value))
-                
-            expression = "\?(?P<key>\w+)\W+(?P<value>\w+)"       
-            m = re.match(expression, filter_string)
-            search_key = (m.group("key"))
-            search_value = (m.group("value"))
-            
-            filter_response = []
-            for task in self.taskboard.tasks:
-                for key, value in task.json().iteritems():
-                    print "k,v", key, value
-                    if search_key == key and search_value == value: 
-                        filter_response.append(task.json().items())
-            
-            if filter_response == []:
-                raise restlite.Status, '400 Bad Request'
-                return request.response(("Filter strong not found"))     
-    
-            return request.response((filter_response))     
-
-        return locals()
-    
-    @restlite.resource
-    def rest_unit():
-
-        def GET(self, request):
-            print "restunit() GET"
-            # Respond to a GET request to /unit/<unit_id>/task with the 
-            # unit's current status   
-            value = []
-            for task in self.taskboard.tasks:
-                value.append(task.json().items())
-            return request.response((self.unit_id,value))     
+class TaskboardHandler(Taskboard):
+    def __init__(self, unit_id):
+        Taskboard.__init__(self, unit_id)
         
-        def POST(self, request, entity):
-            command = json.loads(entity)        
-            try:
-                task = taskobj.Task(self.unit_id, **command)
-            except:
-                raise
-            self.router.process_task(task)
-
-        return locals()          
+        #self.taskboard = taskboardobj.Taskboard(unit_id)
+        
+    def get_new_tasks(self):
+        # Return 
+        new_tasks = []
+        for task in self.tasks:
+            if task.to_unit == self.unit_id and task.board == 'Backlog':
+                assert(task.response == {})
+                # Mark task as 'Response', since the task
+                # is now being processed by the unit.
+                task.board = 'Response'
+                new_tasks.append(task)
+                        
+        return new_tasks   
+    
+    def get_new_responses(self):
+        # Return 
+        new_tasks = []
+        for task in self.tasks:
+            if task.to_unit == self.unit_id and task.board == 'Response':
+                assert(task.response <> {})
+                # Mark task as 'Response', since the task
+                # has now been received and is being processed by the unit.
+                task.board = 'Complete'
+                new_tasks.append(task)
+                        
+        return new_tasks    
             
 class Controller(object):
+
+
+    def _set_status(self, state):
+        valid_states = {'new', 'terminated', 'waiting', 'ready'}
+        if 'new' not in valid_states:
+            raise Exception
+        self.status = state
+ 
     def update(self):
-        pass            
+        print "TASKBOARD"
+        self.taskboard.debug()
+ 
+        logging.info("get_task %s", self.description)
+        logging.debug("get_task() - status %s", self.status)
+        
+        # Get next message from message store for this unit’s ID
+        if self.status == "new": self._new()
+        if self.status == "terminated": self._terminated()
+        if self.status == "waiting": self._waiting()
+        if self.status == "ready": self._ready()
+   
+    def _on_poll(self):
+        # Request inputs at a specific interval
+        if self.unit_type == "Input":
+            self.process()
+        else:
+            self.request_inputs()
+        
+        self._set_status("ready")
+         
+        logging.debug('poll triggered')
+        print "get_new_tasks", self.description
+
+        #self.taskboard.check_all()
+        # Only need to get new tasks for this unit,
+        # all other tasks on our task board
+        # are being addressed by this unit anyway.
+        self.tasks = self.taskboard.get_new_tasks()
+        
+
+
+        # Update inputboard
+        # We don't need to update the task board, because 
+        # tasks on the task board should be things
+        # for _this_ unit to action.
+        self.inputboard.update_all()
+   
+    def unit_startup(self):
+        pass
+   
+    def process(self):
+        pass
+    
+    def setup(self):
+        pass
+     
+    def _new(self):         
+        # Send an announce to all known neightbours
+        for neighbour in self.neighbours:
+
+            task = Task(self.unit_id, from_unit = self.unit_id, to_unit = neighbour, command = {"announce":{"fallback_ids":self.fallback_ids}})
+            self.router.process_task(task)
+         
+        # Unit specific startup
+        self.unit_startup()
+        self._set_status("ready")
+ 
+    def _ready(self):
+        print self.description
+        # Check if any input sets have been received
+        logging.debug("Checking input sets")
+           
+        input_set = self.inputboard.next()
+        print "ready() self.inputboard.next()", input_set
+ 
+        if input_set <> None:
+            print "ready() input_set <> None,", input_set
+            logging.debug("input_set.requests %s %s", self.description, input_set.requests)
+            print "ready() call self.assimilate_inputs(input_set)"
+            self.assimilate_inputs(input_set)
+            self.process()
+             
+        if self.input_poll.isTrigger(): 
+            self._on_poll()
+        
+ 
+# Check for the condition where the unit’s process
+# hasn’t been able to run because not all 
+# information received.
+ 
+        
+ 
+        # Get next message from message store for this unit’s GUID
+        # Unit is ‘ready’ so it is ready to process a received command.
+                      
+        # This next function returns the next task
+        # which is a command addressed to this unit.
+        # not a response
+        # So we look for the task.to_unit to equal our units address.
+        tasks = self.taskboard.get_new_tasks()
+        if tasks is None:
+            return
             
-class GenericUnit(object):
+        for task in tasks:
+        #print "task", self.task
+        #if self.task <> None:
+        
+            assert (self.unit_id == task.to_unit)
+            # There are tasks waiting to be processed
+            # Pop the earliest task and process it
+            # task = self.taskboard.first()
+            logging.info("json of task being processed %s", task.json())
+ 
+            command = task.command.keys()[0]
+            instruction = task.command.get(command)
+                 
+            if command == "announce":
+                logging.debug("Command received - announce")
+                #State this devices GUID and fallback GUIDs
+                self.task.respond({"fallback_ids":self.fallback_ids})
+                self.router.process_task(task)
+                
+     
+            if command == "start":
+                logging.debug("Command received - start")
+                # Start this device
+                # No action, device is already running.
+                task.respond({"status":self._set_status})
+                self.router.process_task(task)
+                
+ 
+            if command == "terminate":
+                logging.debug("Command received - terminate")
+                # Organization chart process will handle
+                # this, as will fall-back 
+                # process in other units.
+                self._set_status("terminated")
+                task.respond({"status":self._set_status})
+                self.router.process_task(task)
+                
+ 
+            if command ==  "clone":
+                logging.debug("Command received - clone")
+                # if possible, create a copy of this unit
+                # with a new UUID
+                # not possible for hardware units
+                response = {"success":False,
+                            "unit_id":None}
+                task.respond(response)
+                self.router.process_task(self.task)
+                
+                 
+                self._set_status("ready")
+ 
+            if command == "setting":
+                logging.debug("Command received - setting")
+                # Change configuration of this unit
+                # Update configuration in persistent
+                # memory to received setting
+                self.configuration.patch(instruction)
+                response = {"success":True}
+                task.respond(response)
+                self.router.process_task(task)
+                                    
+                self._set_status("new")
+ 
+            if command == "configuration":
+                logging.debug("Command received - configuration")               
+                # Respond with this units configuration
+                task.respond(self.configuration.unit_config)
+                self.router.process_task(task)
+                 
+                self._set_status("ready")
+     
+            if command == "output": 
+                logging.debug("Command received - output")
+                # respond with Memory ie (horizon) history and forecast
+                # Provides Memory of output
+                task.respond(self.memory.json())
+                #self.taskboard.remove(task)
+                self.router.process_task(task)
+                
+                self._set_status("ready")
+                 
+            if command == "memory":
+                logging.debug("Command received - memory")
+                # Overwrite units Memory ie (horizon) history and forecast
+                # This is typically used to update memory variable so is common
+                # to all devices.  If it is a memory unit the memory is updated, for
+                # other units it resets the unit memory.             
+                self.memory.replace(instruction)
+                response = {"success":True}
+                task.respond(response)
+                self.router.process_task(task)
+                                         
+ 
+    def _terminated(self):
+        # Listen for a possible command to re-start the unit.
+        task = self.listen_for_unitID(self.id)
+ 
+        if task.command == "start":
+            newtask = self.taskboard.request(self.id, task.command)
+ 
+        self._set_status("ready")
+ 
+    def _waiting(self):
+        # Device didn’t update last cycle, so unit
+        # has been put into "Waiting" state
+        # Address this error condition, which is
+        # likely caused by waiting for input
+        # Check whether all inputs were received.
+        # Try again to contact offending inputs,
+        # fallback to alternative inputs if not.
+        # This is where fallback and resilience is encoded.
+        # Use fail_to variable to decide how to respond.
+        raise NotImplemented
+ 
+        # For now though, 
+        self._set_status("ready")  
+         
+                 
             
-    def __init__(self,unit_config):
+class BaseUnit(Controller):
+            
+    def __init__(self, url, unit_config):
+        self.url = url
+        
+
+        
         self.configuration = config.UnitConfiguration(unit_config)
         # consider refactor for **kwargs
         configurable = unit_config["common"]["configurable"]
@@ -318,7 +490,7 @@ class GenericUnit(object):
         self.json_config = unit_config
 
         # Apply configuration
-        self.id = non_configurable["unit_id"]
+        #self.id = non_configurable["unit_id"]
         self.unit_id = non_configurable["unit_id"]
 
         self.function = non_configurable["function"]
@@ -354,13 +526,14 @@ class GenericUnit(object):
         # Additional variables
         self.status = "new"
         
-        self.taskboard = taskboardobj.Taskboard(self.id)
+        #self.taskboard = taskboardobj.Taskboard(self.id)
+        self.taskboard = TaskboardHandler(self.unit_id) 
         self.inputboard = Inputs(self.input_ids, self.fallback_ids)
-        self.router = router.Router(self.unit_id, self.taskboard)
+        self.router = RouterHandler(self.unit_id, self.taskboard)
         
-        self.rest = RestServer(self.unit_id, self.taskboard, self.router)
+        self.rest = rest.RestServer(self.unit_id, self.taskboard, self.router)
         
-        self.memory =  taskobj.Memory()
+        self.memory =  Memory()
         
         self.task = None
         
@@ -372,12 +545,7 @@ class GenericUnit(object):
         # "status": [New, Ready, Running, Waiting, Terminated],
 
         # Run start-up
-        self.set_status("new")
-
-    def unit_startup(self):
-        # Unit start-up
-        # Defined by inheriting class
-        pass
+        self._set_status("new")
 
     def request_inputs(self):
         logging.debug("request_inputs() %s", self.inputboard.input_ids)
@@ -390,7 +558,7 @@ class GenericUnit(object):
         for inpt in self.inputboard.input_ids:
 
             command = {"output":{}}
-            task = taskobj.Task(unit_id = self.unit_id, command = command, from_unit = self.unit_id, to_unit = inpt)
+            task = Task(unit_id = self.unit_id, command = command, from_unit = self.unit_id, to_unit = inpt)
             self.taskboard.add(task)
             task_set.append(task)
         
@@ -413,54 +581,7 @@ class GenericUnit(object):
 
         # Display memory
         
-    def set_status(self, state):
-        valid_states = {'new', 'terminated', 'waiting', 'ready'}
-        if 'new' not in valid_states:
-            raise Exception
-        self.status = state
 
-    
-    def new(self):
-        # Common startup up procedure
-        command = {"announce":{"fallback_ids":self.fallback_ids}}
-        # Announce using own id for to_unit as this is not addressed to any specific unit
-        
-        # Send an announce to all known neightbours
-        for neighbour in self.neighbours:
-            print "neightbour", neighbour
-            task = taskobj.Task(self.unit_id, from_unit = self.unit_id, to_unit = neighbour, command = {"announce":{"fallback_ids":self.fallback_ids}})
-            self.router.process_task(task)
-        
-        #self.taskboard.request(self.id, command)
-        # Unit specific startup
-        self.unit_startup()
-        self.set_status("ready")
-
-    def terminated(self):
-        # Listen for a possible command to re-start the unit.
-        task = self.listen_for_unitID(self.id)
-
-
-        if task.command == "start":
-            newtask = self.taskboard.request(self.id, task.command)
-            #self.taskboard.add(newtask)
-
-        self.set_status("ready")
-
-    def waiting(self):
-        # Device didn’t update last cycle, so unit
-        # has been put into "Waiting" state
-        # Address this error condition, which is
-        # likely caused by waiting for input
-        # Check whether all inputs were received.
-        # Try again to contact offending inputs,
-        # fallback to alternative inputs if not.
-        # This is where fallback and resilience is encoded.
-        # Use fail_to variable to decide how to respond.
-        raise NotImplemented
-
-        # For now though, 
-        self.set_status("ready")
     
     def assimilate_inputs(self, received_input_set):
         # Take inputs received from an output request and
@@ -486,208 +607,9 @@ class GenericUnit(object):
             task = self.taskboard.find_task(input_container.task.task_id)
             self.taskboard.remove(task)
 
-    def on_poll(self):
-        # Request inputs at a specific interval
-        if self.unit_type == "Input":
-            self.process()
-        else:
-            self.request_inputs()
-        
-        self.set_status("ready")
-         
-        logging.debug('poll triggered')
-        print "get_new_tasks", self.description
 
-        #self.taskboard.check_all()
-        # Only need to get new tasks for this unit,
-        # all other tasks on our task board
-        # are being addressed by this unit anyway.
-        self.task = self.taskboard.get_new_task()
         
 
-
-        # Update inputboard
-        # We don't need to update the task board, because 
-        # tasks on the task board should be things
-        # for _this_ unit to action.
-        self.inputboard.update_all()
-        
-    def ready(self):
-        print self.description
-        # Check if any input sets have been received
-        logging.debug("Checking input sets")
-#         for input_set in self.inputboard.input_sets:
-#             print "set_id",input_set.id
-#             print input_set.isResponse()
-#             if input_set.isResponse():
-#                 self.process()
-        #if self.inputboard.isResponse():
-          
-        input_set = self.inputboard.next()
-        print "ready() self.inputboard.next()", input_set
-
-        if input_set <> None:
-            print "ready() input_set <> None,", input_set
-            logging.debug("input_set.requests %s %s", self.description, input_set.requests)
-            print "ready() call self.assimilate_inputs(input_set)"
-            self.assimilate_inputs(input_set)
-            self.process()
-            
-        if self.input_poll.isTrigger(): 
-            self.on_poll()
-       
-
-# Check for the condition where the unit’s process
-# hasn’t been able to run because not all 
-# information received.
-
-       
-
-        # Get next message from message store for this unit’s GUID
-        # Unit is ‘ready’ so it is ready to process a received command.
-              
-        #if len(self.taskboard.tasks) > 0:
-        print self.taskboard.debug()
-        
-        # This next function returns the next task
-        # which is a command addressed to this unit.
-        # not a response
-        # So we look for the task.to_unit to equal our units address.
-        
-        #task = self.taskboard.first()
-        print "task", self.task
-        if self.task <> None:
-            assert (self.unit_id == self.task.to_unit)
-            # There are tasks waiting to be processed
-            # Pop the earliest task and process it
-            # task = self.taskboard.first()
-            logging.info("json of task being processed %s", task.json())
-
-            command = self.task.command.keys()[0]
-            instruction = self.task.command.get(command)
-                
-            if command == "announce":
-                logging.debug("Command received - announce")
-                #State this devices GUID and fallback GUIDs
-                self.task.respond({"fallback_ids":self.fallback_ids})
-                self.router.process_task(self.task)
-                self.task = None
-                
-                #self.taskboard.remove(task)
-    
-            if command == "start":
-                logging.debug("Command received - start")
-                # Start this device
-                # No action, device is already running.
-                self.task.respond({"status":self.set_status})
-                self.router.process_task(self.task)
-                self.task = None
-                #self.taskboard.remove(task)
-
-    
-            if command == "terminate":
-                logging.debug("Command received - terminate")
-                # Organization chart process will handle
-                # this, as will fall-back 
-                # process in other units.
-                self.set_status("terminated")
-                self.task.respond({"status":self.set_status})
-                self.router.process_task(self.task)
-                self.task = None
-                #self.taskboard.remove(task)
-    
-    
-            if command ==  "clone":
-                logging.debug("Command received - clone")
-                # if possible, create a copy of this unit
-                # with a new UUID
-                # not possible for hardware units
-                response = {"success":False,
-                            "unit_id":None}
-                self.task.respond(response)
-                self.router.process_task(self.task)
-                self.task = None
-                
-                #self.taskboard.remove(task)
-                self.set_status("ready")
-                
-                #<< Unit specific code>>
-                
-    
-            if command == "setting":
-                logging.debug("Command received - setting")
-                # Change configuration of this unit
-                # Update configuration in persistent
-                # memory to received setting
-                self.configuration.patch(instruction)
-                response = {"success":True}
-                self.task.respond(response)
-                self.router.process_task(self.task)
-                self.task = None
-                
-                #self.taskboard.remove(task)                    
-                self.set_status("new")
-
-            if command == "configuration":
-                logging.debug("Command received - configuration")               
-                # Respond with this units configuration
-                self.task.respond(self.configuration.unit_config)
-                self.router.process_task(self.task)
-                self.task = None
-                
-                self.set_status("ready")
-    
-            if command == "output": 
-                logging.debug("Command received - output")
-                # respond with Memory ie (horizon) history and forecast
-                # Provides Memory of output
-                self.task.respond(self.memory.json())
-                #self.taskboard.remove(task)
-                self.router.process_task(self.task)
-                self.task = None
-                self.set_status("ready")
-                
-            if command == "memory":
-                logging.debug("Command received - memory")
-                # Overwrite units Memory ie (horizon) history and forecast
-                # This is typically used to update memory variable so is common
-                # to all devices.  If it is a memory unit the memory is updated, for
-                # other units it resets the unit memory.             
-                self.memory.replace(instruction)
-                response = {"success":True}
-                self.task.respond(response)
-                self.router.process_task(self.task)
-                self.task = None
-                        
-            
-            # Get any announcements for input_ids
-            # Need to figure out how to handle this
-
-    def get_task(self):
-        print "TASKBOARD"
-        self.taskboard.debug()
-
-        logging.info("get_task %s", self.description)
-        logging.debug("get_task() - status %s", self.status)
-        # Get next message from message store for this unit’s ID
-        if self.status == "new": self.new()
-        if self.status == "terminated": self.terminated()
-        if self.status == "waiting": self.waiting()
-        if self.status == "ready": self.ready()
-        
-        
-        #self.process()
-
-    def process (self):
-        logging.info("process() %s", self.description)
-        # Generic process to be overwritten by custom 
-        # processes.
-        # For this process just mirror inputs to output.
-        #self.get_task()
-
-        from random import randrange
-        
-        self.memory.add({"dummy_reading":randrange(100)})
 
     def debug_unit(self):
         print "unit id:    ", self.id
@@ -697,121 +619,133 @@ class GenericUnit(object):
         print
 
 
-class MemoryUnit(GenericUnit):
-    def process(self):
-        # No process
-        pass
-    def unit_startup(self):
-        # TBD
-        pass
-    
-
-class ClockUnit(GenericUnit):
-    def process(self):
-        logging.info("process() %s", self.description)
-        
-        #dt= datetime.now()
-        #time_stamp = dt.strftime('%Y-%m-%dT%H:%M:%S')
-        time_stamp = taskobj.create_timestamp()
-        self.memory.add({"time":time_stamp})
-        
-    def unit_startup(self):
-        #Get NTP time
-        pass
-
-class SimpleForecastUnit(GenericUnit):
-    def process(self):
-        print "PassThruUnit process()"
-        # For the PassThruUnit take the latest received memory and make the units
-        # memory reflect this.
-        # Raise an exception if there is more than one input
-        
-        # Get the next completed input set
-        logging.info("start process() %s", self.description)
-        
-        ''' Take last value and forecast this out for an hour '''
-
-        logging.debug("Passing input to memory")
-
-        if len(self.inputboard.input_container) > 1:
-            raise Exception("More than one input passed to ForecastUnit.")
-        
-        self.memory.history = self.inputboard.input_container[0].history
-        self.memory.forecast = self.inputboard.input_container[0].forecast
-
-
-        # See if there is any data to extrapolate 
-        try:
-            data = self.memory.history[0].data
-            start_time = taskobj.load_timestamp(self.memory.history[0].time_stamp)
-        except IndexError:
-            data = None
-            start_time = datetime.datetime.now()
-
-        if self.update_cycle <= 0:
-            delta_t = 60*5    
-        else:
-            delta_t = self.update_cycle
-        print "data", data
-        
-        self.memory.forecast = []
-        for i in xrange(10):
-            ts = start_time + datetime.timedelta(seconds = i * delta_t)            
-            time_stamp = taskobj.create_timestamp(ts)
-            self.memory.add_forecast(data, time_stamp)        
-  
-    def unit_startup(self):
-        pass
-
-class PassThruUnit(GenericUnit):
-    def process(self):
-        print "PassThruUnit process()"
-        # For the PassThruUnit take the latest received memory and make the units
-        # memory reflect this.
-        # Raise an exception if there is more than one input
-        
-        # Get the next completed input set
-        logging.info("start process() %s", self.description)
-        
-        
-        if len(self.inputboard.input_container) > 1:
-            raise Exception("More than one input passed to PassThruUnit.")
-
-        logging.debug("Passing input to memory")
-        print "self.inputboard.input_container[0].history"
-        print self.inputboard.input_container[0].history
-        
-        self.memory.history = self.inputboard.input_container[0].history
-        self.memory.forecast = self.inputboard.input_container[0].forecast
-  
-
-    def unit_startup(self):
-        pass
-
-class NullUnit(GenericUnit):
-    def process(self):
-        print "NullUnit process()"
-        raise NotImplemented
-    def unit_startup(self):
-        pass
-
-class AND(GenericUnit):
-    def process(self):
-        #self.requestinputs()
-        
-        pass
-    def unit_startup(self):
-        #Get NTP time
-        pass
-
-class OR(GenericUnit):
-    pass
-
-class NOT(GenericUnit):
-    pass
-
-class XOR(GenericUnit):
-    pass
+# class GenericUnit(BaseUnit):
+#     def process (self):
+#         logging.info("process() %s", self.description)
+#         # Generic process to be overwritten by custom 
+#         # processes.
+#         # For this process just mirror inputs to output.
+#         #self.get_task()
+# 
+#         from random import randrange
+#         
+#         self.memory.add({"dummy_reading":randrange(100)})
+# 
+# class MemoryUnit(BaseUnit):
+#     def process(self):
+#         # No process
+#         pass
+#     def unit_startup(self):
+#         # TBD
+#         pass
+#     
+# 
+# class ClockUnit(BaseUnit):
+#     def process(self):
+#         logging.info("process() %s", self.description)
+#         
+#         #dt= datetime.now()
+#         #time_stamp = dt.strftime('%Y-%m-%dT%H:%M:%S')
+#         time_stamp = task.create_timestamp()
+#         self.memory.add({"time":time_stamp})
+#         
+#     def unit_startup(self):
+#         #Get NTP time
+#         pass
+# 
+# class SimpleForecastUnit(BaseUnit):
+#     def process(self):
+#         print "PassThruUnit process()"
+#         # For the PassThruUnit take the latest received memory and make the units
+#         # memory reflect this.
+#         # Raise an exception if there is more than one input
+#         
+#         # Get the next completed input set
+#         logging.info("start process() %s", self.description)
+#         
+#         ''' Take last value and forecast this out for an hour '''
+# 
+#         logging.debug("Passing input to memory")
+# 
+#         if len(self.inputboard.input_container) > 1:
+#             raise Exception("More than one input passed to ForecastUnit.")
+#         
+#         self.memory.history = self.inputboard.input_container[0].history
+#         self.memory.forecast = self.inputboard.input_container[0].forecast
+# 
+# 
+#         # See if there is any data to extrapolate 
+#         try:
+#             data = self.memory.history[0].data
+#             start_time = task.load_timestamp(self.memory.history[0].time_stamp)
+#         except IndexError:
+#             data = None
+#             start_time = datetime.datetime.now()
+# 
+#         if self.update_cycle <= 0:
+#             delta_t = 60*5    
+#         else:
+#             delta_t = self.update_cycle
+#         print "data", data
+#         
+#         self.memory.forecast = []
+#         for i in xrange(10):
+#             ts = start_time + datetime.timedelta(seconds = i * delta_t)            
+#             time_stamp = task.create_timestamp(ts)
+#             self.memory.add_forecast(data, time_stamp)        
+#   
+#     def unit_startup(self):
+#         pass
+# 
+# class PassThruUnit(BaseUnit):
+#     def process(self):
+#         print "PassThruUnit process()"
+#         # For the PassThruUnit take the latest received memory and make the units
+#         # memory reflect this.
+#         # Raise an exception if there is more than one input
+#         
+#         # Get the next completed input set
+#         logging.info("start process() %s", self.description)
+#         
+#         
+#         if len(self.inputboard.input_container) > 1:
+#             raise Exception("More than one input passed to PassThruUnit.")
+# 
+#         logging.debug("Passing input to memory")
+#         print "self.inputboard.input_container[0].history"
+#         print self.inputboard.input_container[0].history
+#         
+#         self.memory.history = self.inputboard.input_container[0].history
+#         self.memory.forecast = self.inputboard.input_container[0].forecast
+#   
+# 
+#     def unit_startup(self):
+#         pass
+# 
+# class NullUnit(BaseUnit):
+#     def process(self):
+#         print "NullUnit process()"
+#         raise NotImplemented
+#     def unit_startup(self):
+#         pass
+# 
+# class AND(BaseUnit):
+#     def process(self):
+#         #self.requestinputs()
+#         
+#         pass
+#     def unit_startup(self):
+#         #Get NTP time
+#         pass
+# 
+# class OR(BaseUnit):
+#     pass
+# 
+# class NOT(BaseUnit):
+#     pass
+# 
+# class XOR(BaseUnit):
+#     pass
 
 def main():  
     # Instantiate a new genericunit 

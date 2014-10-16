@@ -9,23 +9,24 @@ import logging
 from random import randrange
 import unittest
 
-from .. import unit
-from .. import unit_custom
-from .. import taskboard_interface
-from .. import configmanage
-from .. import jsonschema
+from enablething import unit_core
+from enablething import unit_custom
+
+from enablething import config
+from enablething import jsonschema
 
 # create logger
 logging.basicConfig(filename='log.log',level=logging.DEBUG)
        
 
-def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = None, input_ids = [], update_cycle = 5, description = "Generic unit"):
+def configure_unit(unit_setup = unit_core.GenericUnit, unit_specific = None, id = None, input_ids = [], update_cycle = 5, description = "Generic unit", neighbours = []):
     if id == None:
         id = uuid.uuid4().hex
     # Load GUID list from configuration in GUID list
     unit_config = {
                         "common": {
                             "configurable": {
+                                "neighbours" : neighbours,
                                 "fallback_UUIDs": [],
                                 "input_UUIDs": input_ids,
                                 "memory_UUID": "g",
@@ -45,7 +46,8 @@ def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = Non
                                 "description": description,
                                 "function": "display",
                                 "status": "ready",
-                                "last_error": "OK"
+                                "last_error": "OK",
+                                "method" : str(unit_setup)
                                 }
                             },
                          "unit_specific": {
@@ -60,7 +62,7 @@ def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = Non
     else:
         unit_config['unit_specific'] = unit_specific
   
-    return unit_setup(unit_config)
+    return unit_setup(id, unit_config)
 
 
 
@@ -81,7 +83,7 @@ class Test_Taskboard(unittest.TestCase):
 
     def test_update_configuration(self):
 
-        c = configmanage.ThingConfiguration()
+        c = config.ThingConfiguration()
         unit_config = c.units[0].unit_config
 
 
@@ -103,7 +105,7 @@ class Test_Taskboard(unittest.TestCase):
         fail_patch = {"common": {"configurable":{"undefined_key_is_bad": 9}}}
         self.assertRaises(jsonschema.ValidationError, lambda: c.units[0].patch(fail_patch))
         
-        c = configmanage.ThingConfiguration()
+        c = config.ThingConfiguration()
         unit_config = c.units[0].unit_config
         
         # Test that an attempt to add an additional field to unit_specific passes
@@ -120,9 +122,9 @@ class Test_Taskboard(unittest.TestCase):
               
     #unittest.skip("Skip clock")        
     def test_process(self):
-        test_unit = configure_unit(unit_setup = unit.GenericUnit, id = uuid.uuid4().hex, update_cycle = 0)
+        test_unit = configure_unit(unit_setup = unit_core.GenericUnit, id = uuid.uuid4().hex, update_cycle = 0)
         for __ in xrange(10):
-            test_unit.get_task()
+            test_unit.update()
         self.assertTrue('forecast' in test_unit.memory.json())
         self.assertTrue('history' in test_unit.memory.json())
 
@@ -133,14 +135,14 @@ class Test_Taskboard(unittest.TestCase):
         testunit2_id = uuid.uuid4().hex      
         masterunit_id = uuid.uuid4().hex
         
-        testunit1 = configure_unit(unit_setup = unit.GenericUnit, id = testunit1_id)
-        testunit2 = configure_unit(unit_setup = unit.GenericUnit, id = testunit2_id)
-        masterunit = configure_unit(unit_setup = unit.GenericUnit, id = masterunit_id, input_ids = [testunit1.id,testunit2.id])
+        testunit1 = configure_unit(unit_setup = unit_core.GenericUnit, id = testunit1_id)
+        testunit2 = configure_unit(unit_setup = unit_core.GenericUnit, id = testunit2_id)
+        masterunit = configure_unit(unit_setup = unit_core.GenericUnit, id = masterunit_id, input_ids = [testunit1.unit_id,testunit2.unit_id])
                     
         self.assertTrue(masterunit.status == "new")
 
         # Instantiate new_unit depending on unit_class
-        masterunit.get_task()
+        masterunit.update()
                 
         # This should trigger an "announce" and change status to "ready"      
         self.assertTrue(masterunit.status == "ready")
@@ -151,42 +153,38 @@ class Test_Taskboard(unittest.TestCase):
         tasks = []
         for task in masterunit.taskboard.tasks:
             tasks.append(task)
-            
-        testunit1.get_task()
-        testunit1.get_task()
         
-        testunit2.get_task()
-        testunit2.get_task()
-
-        masterunit.get_task()
-         
-        self.assertTrue(len(tasks)==2)
-        for task in tasks:
-            response = taskboard_interface.get_task(task.task_id)
-            self.assertNotEqual(response["response"], "{}")
+        for __ in xrange(5):      
+            testunit1.update()
+            testunit2.update()
+            masterunit.update()
+        
+        print masterunit.taskboard.debug()
+        
+        #self.assertTrue(len(tasks)==2)
+        
+        for task in masterunit.taskboard.tasks:
+            print "task.response", task.response
+            #response = taskboard_interface.update(task.task_id)
+            self.assertNotEqual(task.response, "{}")
+        #self.assertTrue(False)
               
             
     
     #unittest.skip("Skip clock")
-    def test_aanounce(self):
-        
-                         
+    def test_announce(self):                         
         # Instantiate new_unit depending on unit_class
-         
-        testunit = configure_unit(unit_setup = unit.GenericUnit)
+        neighbour = uuid.uuid4().hex
+        testunit = configure_unit(unit_setup = unit_core.GenericUnit, neighbours = [neighbour])
         # Run unit ... which should generate an "announce"
+        for __ in xrange(5):
+            testunit.update()
         
-        testunit.get_task()
-        
-        print testunit.taskboard.last_removed_task_id()
-        
-        task = taskboard_interface.get_task(testunit.taskboard.last_removed_task_id())
-        
+        testunit.taskboard.debug()
+        task = testunit.taskboard.tasks[0]
 
-        print task['command'], "announce" in task['command']
-        self.assertTrue("announce" in task['command'])
-        
-       
+        self.assertTrue('announce' in task.command)
+        self.assertTrue(neighbour in task.to_unit)
 
 
         

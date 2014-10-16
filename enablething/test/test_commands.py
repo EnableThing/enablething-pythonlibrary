@@ -9,25 +9,26 @@ import logging
 from random import randrange
 import unittest
 
-from .. import unit
-from .. import unit_custom
-from .. import taskboard_interface
-from .. import taskobj
-from .. import configmanage
-from .. import jsonschema
-from .. import taskboardobj
+from enablething import unit_core
+from enablething import unit_custom
+
+from enablething.task import Task, Chronicle
+from enablething import config
+from enablething import jsonschema
+from enablething.taskboard import Taskboard
 
 # create logger
 logging.basicConfig(filename='log.log',level=logging.DEBUG)
        
 
-def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = None, input_ids = [], update_cycle = 5, description = "Generic unit"):
+def configure_unit(unit_setup = unit_core.GenericUnit, unit_specific = None, id = None, input_ids = [], update_cycle = 5, description = "Generic unit"):
     if id == None:
         id = uuid.uuid4().hex
     # Load GUID list from configuration in GUID list
     unit_config = {
                         "common": {
                             "configurable": {
+                                "neighbours" : [],
                                 "fallback_UUIDs": [],
                                 "input_UUIDs": input_ids,
                                 "memory_UUID": "g",
@@ -47,7 +48,8 @@ def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = Non
                                 "description": description,
                                 "function": "display",
                                 "status": "ready",
-                                "last_error": "OK"
+                                "last_error": "OK",
+                                "method" : str(unit_setup)
                                 }
                             },
                          "unit_specific": {
@@ -62,7 +64,7 @@ def configure_unit(unit_setup = unit.GenericUnit, unit_specific = None, id = Non
     else:
         unit_config['unit_specific'] = unit_specific
   
-    return unit_setup(unit_config)
+    return unit_setup(id, unit_config)
 
 
 
@@ -86,21 +88,21 @@ class Test_Taskboard(unittest.TestCase):
         id0 = uuid.uuid4().hex 
         id1 = uuid.uuid4().hex
         id2 = uuid.uuid4().hex
-        taskboard = taskboardobj.Taskboard(id1)
+        taskboard = Taskboard(id1)
         command = {"announce":{}}
         chronicle = [{'time_ms': 0.0, 'unit_id': id0, 'hop': 1}]
                    
-        task = taskobj.Task(unit_id = id0, chronicle = chronicle, from_unit = id1, to_unit = id2, command = command)     
+        task = Task(unit_id = id0, chronicle = chronicle, from_unit = id1, to_unit = id2, command = command)     
         taskboard.add(task)  
         self.assertTrue(len(task.chronicle)==1)
         
-        c = taskobj.Chronicle(unit_id = id1, chronicle = task.chronicle)
+        c = Chronicle(unit_id = id1, chronicle = task.chronicle)
         c.update()
         
         task.chronicle = c.json()      
         self.assertTrue(len(task.chronicle)==2)
         
-        c = taskobj.Chronicle(unit_id = id2, chronicle = task.chronicle)
+        c = Chronicle(unit_id = id2, chronicle = task.chronicle)
         c.update()
         
         self.assertTrue(len(task.chronicle)==3)
@@ -129,30 +131,30 @@ class Test_Taskboard(unittest.TestCase):
         # existing memory
         
         # Set update cycle to 10,000 to avoid generating data.
-        inputunit = configure_unit(unit_setup = unit.GenericUnit, input_ids = [], update_cycle = 0, description = "Test string af31")
-        print "INPUTUNIT.ID", inputunit.id
-        processunit = configure_unit(unit_setup = unit.PassThruUnit, input_ids = [inputunit.id], update_cycle = 0, description = "PassThruUnit unit")
-        print "PROCESSUNIT.ID", processunit.id
+        inputunit = configure_unit(unit_setup = unit_core.GenericUnit, input_ids = [], update_cycle = 0, description = "Test string af31")
+        print "INPUTUNIT.unit_id", inputunit.unit_id
+        processunit = configure_unit(unit_setup = unit_core.PassThruUnit, input_ids = [inputunit.unit_id], update_cycle = 0, description = "PassThruUnit unit")
+        print "PROCESSUNIT.unit_id", processunit.unit_id
         # Process announces
         
         for __ in xrange(5):
-            inputunit.get_task()
-            processunit.get_task()
+            inputunit.update()
+            processunit.update()
             
         # Test that empty strings can be sent/
         id = uuid.uuid4().hex
-        taskboard = taskboardobj.Taskboard(id)
+        taskboard = Taskboard(id)
         command = {"memory":
                     {'forecast': [], 
                      'history': []}
                    }
                             
-        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = Task(unit_id = processunit.unit_id, from_unit = processunit.unit_id, to_unit = inputunit.unit_id, command = command)
         taskboard.add(task)
         
         for __ in xrange(1):
-            inputunit.get_task()
-            processunit.get_task()
+            inputunit.update()
+            processunit.update()
 
         print "forecast"
         for i in inputunit.memory.forecast:
@@ -187,12 +189,12 @@ class Test_Taskboard(unittest.TestCase):
                          {'time_stamp': 'Sat, 27 Sep 2014 23:31:57 -0000', 'data': {'dummy_reading': 606}}]}
                    }
         
-        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = Task(unit_id = processunit.unit_id, from_unit = processunit.unit_id, to_unit = inputunit.unit_id, command = command)
         taskboard.add(task)
         
         for __ in xrange(1):
-            inputunit.get_task()
-            processunit.get_task()
+            inputunit.update()
+            processunit.update()
  
         print "forecast"
         for i in inputunit.memory.forecast:
@@ -210,54 +212,54 @@ class Test_Taskboard(unittest.TestCase):
     def test_command_configuration(self):
         # Test sending a configuration request, and confirming the unit responds
         # with current configuration.
-        inputunit = configure_unit(unit_setup = unit.GenericUnit, input_ids = [], update_cycle = 0, description = "Test string af31")
-        print "INPUTUNIT.ID", inputunit.id
-        processunit = configure_unit(unit_setup = unit.PassThruUnit, input_ids = [inputunit.id], update_cycle = 0, description = "PassThruUnit unit")
-        print "PROCESSUNIT.ID", processunit.id
+        inputunit = configure_unit(unit_setup = unit_core.GenericUnit, input_ids = [], update_cycle = 0, description = "Test string af31")
+        print "INPUTUNIT.unit_id", inputunit.unit_id
+        processunit = configure_unit(unit_setup = unit_core.PassThruUnit, input_ids = [inputunit.unit_id], update_cycle = 0, description = "PassThruUnit unit")
+        print "PROCESSUNIT.unit_id", processunit.unit_id
         # Process announces
         
         for __ in xrange(5):
-            inputunit.get_task()
-            processunit.get_task()
+            inputunit.update()
+            processunit.update()
             
         # Create a task that requests configuration
         id = uuid.uuid4().hex
-        taskboard = taskboardobj.Taskboard(id)
+        taskboard = Taskboard(id)
         command = {"configuration":"Null"}
                     
-        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = Task(unit_id = processunit.unit_id, from_unit = processunit.unit_id, to_unit = inputunit.unit_id, command = command)
         task_id = task.task_id
         taskboard.add(task)
         
         for __ in xrange(5):
-            inputunit.get_task()
-            processunit.get_task()
+            inputunit.update()
+            processunit.update()
             
         # Should be no memory initially on inputunit       
         self.assertEquals(inputunit.configuration.unit_config["common"]["non_configurable"]["description"], "Test string af31")
 
     def test_command_setting(self):
-        inputunit = configure_unit(unit_setup = unit.GenericUnit, input_ids = [], update_cycle = 0, description = "Input unit - clock")
-        print "INPUTUNIT.ID", inputunit.id
-        processunit = configure_unit(unit_setup = unit.PassThruUnit, input_ids = [inputunit.id], update_cycle = 0, description = "PassThruUnit unit")
-        print "PROCESSUNIT.ID", processunit.id
+        inputunit = configure_unit(unit_setup = unit_core.GenericUnit, input_ids = [], update_cycle = 0, description = "Input unit - clock")
+        print "INPUTUNIT.unit_id", inputunit.unit_id
+        processunit = configure_unit(unit_setup = unit_core.PassThruUnit, input_ids = [inputunit.unit_id], update_cycle = 0, description = "PassThruUnit unit")
+        print "PROCESSUNIT.unit_id", processunit.unit_id
         # Process announces
         
         for __ in xrange(5):
-            inputunit.get_task()
-            processunit.get_task()
+            inputunit.update()
+            processunit.update()
             
         # Create a task that requests configuration from input unit 
         id = uuid.uuid4().hex
-        taskboard = taskboardobj.Taskboard(id)
+        taskboard = Taskboard(id)
         command = {"setting":{"common": {"configurable": {"update_cycle": 9999}}}}                   
-        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = Task(unit_id = processunit.unit_id, from_unit = processunit.unit_id, to_unit = inputunit.unit_id, command = command)
         task_id = task.task_id
         taskboard.add(task)
         
         for __ in xrange(5):
-            inputunit.get_task()
-            processunit.get_task()
+            inputunit.update()
+            processunit.update()
             
         # Should be no memory initially on inputunit       
         self.assertEquals(inputunit.configuration.unit_config["common"]["configurable"]["update_cycle"], 9999)                
@@ -265,7 +267,7 @@ class Test_Taskboard(unittest.TestCase):
 
     def test_update_configuration(self):
 
-        c = configmanage.ThingConfiguration()
+        c = config.ThingConfiguration()
         unit_config = c.units[0].unit_config
 
 
@@ -287,7 +289,7 @@ class Test_Taskboard(unittest.TestCase):
         fail_patch = {"common": {"configurable":{"undefined_key_is_bad": 9}}}
         self.assertRaises(jsonschema.ValidationError, lambda: c.units[0].patch(fail_patch))
         
-        c = configmanage.ThingConfiguration()
+        c = config.ThingConfiguration()
         unit_config = c.units[0].unit_config
         
         # Test that an attempt to add an additional field to unit_specific passes
@@ -309,43 +311,45 @@ class Test_Taskboard(unittest.TestCase):
                          
         # Instantiate new_unit depending on unit_class
          
-        testunit = configure_unit(unit_setup = unit.GenericUnit)
+        testunit = configure_unit(unit_setup = unit_core.GenericUnit)
         # Run unit ... which should generate an "announce"
         
-        testunit.get_task()
+        testunit.update()
         
         print testunit.taskboard.last_removed_task_id()
         
-        task = taskboard_interface.get_task(testunit.taskboard.last_removed_task_id())
+        task = taskboard_interface.update(testunit.taskboard.last_removed_task_id())
         
 
         print task['command'], "announce" in task['command']
         self.assertTrue("announce" in task['command'])
         
     def test_command_announce_a(self):
-        inputunit = configure_unit(unit_setup = unit.GenericUnit, input_ids = [], update_cycle = 0, description = "Input unit - clock")
-        print "INPUTUNIT.ID", inputunit.id
-        processunit = configure_unit(unit_setup = unit.PassThruUnit, input_ids = [inputunit.id], update_cycle = 0, description = "PassThruUnit unit")
-        print "PROCESSUNIT.ID", processunit.id
+        inputunit = configure_unit(unit_setup = unit_core.GenericUnit, input_ids = [], update_cycle = 0, description = "Input unit - clock")
+        print "INPUTUNIT.unit_id", inputunit.unit_id
+        processunit = configure_unit(unit_setup = unit_core.PassThruUnit, input_ids = [inputunit.unit_id], update_cycle = 0, description = "PassThruUnit unit")
+        print "PROCESSUNIT.unit_id", processunit.unit_id
         # Process announces
         
         for __ in xrange(5):
-            inputunit.get_task()
-            processunit.get_task()
+            inputunit.update()
+            processunit.update()
             
         # Create a task that requests configuration from input unit 
         id = uuid.uuid4().hex
-        taskboard = taskboardobj.Taskboard(id)
+        taskboard = Taskboard(id)
         command = {"announce":{}}                
-        task = taskobj.Task(unit_id = processunit.id, from_unit = processunit.id, to_unit = inputunit.id, command = command)
+        task = Task(unit_id = processunit.unit_id, from_unit = processunit.unit_id, to_unit = inputunit.unit_id, command = command)
         task_id = task.task_id
         taskboard.add(task)
         
         for __ in xrange(5):
-            inputunit.get_task()
-            processunit.get_task()
+            inputunit.update()
+            processunit.update()
             
         print "task.response", task.response
+        inputunit.taskboard.debug()
+        processunit.taskboard.debug()
             
               
         self.assertTrue(False)

@@ -1,16 +1,6 @@
 from collections import defaultdict, OrderedDict
 import time
 
-# from restlite import restlite
-# 
-# @restlite.resource
-# def testcall():
-#     def GET(request):
-#         
-#         return request.response(("testcall"))     
-# 
-#     return locals()
-
 class PheromoneTable(object):
     def __init__(self):
         self.q = 1
@@ -90,10 +80,10 @@ class NeighbourTable(object):
         raise NotImplemented
 
     
-class Router(object):
+class RouterHandler(object):
     def __init__(self, unit_id,taskboard):
-        self.pheromone = PheromoneTable()
-        self.neighbours = NeighbourTable()
+        self.pheromone_table = PheromoneTable()
+        self.neighbour_table = NeighbourTable()
         self.unit_id = unit_id
         #self.chronicle = None
         self.taskboard = taskboard
@@ -103,16 +93,16 @@ class Router(object):
         # Don't pass the packet on
         pass
 
-    def forward_ant(self,task):
+    def _forward_ant(self,task):
         # forward ant
         # check pheromone table and route to best neighbour or multicast
         try:
-            self.forward(self.pheromone.best_neighbour(task.to_unit))
+            self.forward(self.pheromone_table.best_neighbour(task.to_unit))
         except KeyError:
             # Not found, so multi-cast to all units
             self.forward()
 
-    def backward_ant(self,task):
+    def _backward_ant(self,task):
         # 'backward ant' retracing its steps
         # check chronicle and route back along route
         neighbour = task.chronicle_manager.previous(self.unit_id)
@@ -127,11 +117,11 @@ class Router(object):
         self.pheromone.reinforce(destination, neighbour, time_ms)
         '''delete message from taskboard'''
 
-    def route_message(self,task):
+    def route_task(self,task):
         if task.response == {}:
-            self.forward_ant(task)
+            self._forward_ant(task)
         else:
-            self.backward_ant(task)
+            self._backward_ant(task)
             
     
 
@@ -145,17 +135,16 @@ class Router(object):
         
         # If any message received, then update pheromone table
         # This will reduce all pheromone values globally
-        self.pheromone.update()
+        self.pheromone_table.update()
 
         # Find out where the message came from and
         # update the Neighbour table.
         # Even if it comes from 'radio' the unit sending it is a neighbour
-        neighbour = task.chronicle_manager.last()
-        self.neighbours.update(neighbour)
-
-        # Check for a loop in chronicle
-        if task.chronicle_manager.isLoop():
-            return
+        try:
+            neighbour = task.previous_neighbour()
+            self.neighbour_table.update(neighbour)
+        except LookupError:
+            pass
 
         # Debatable: TTL kill messages if they are too old.
         # Try initially setting TTL to 10 minutes
@@ -183,6 +172,8 @@ class Router(object):
             ''' if message is not addressed to this unit:
                 append chronicle
                 route message  '''
+            task.chronicle.add_chronicle()
+            
             self.route_message(task)
     
 
