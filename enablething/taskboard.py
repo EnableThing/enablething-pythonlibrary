@@ -1,13 +1,16 @@
 import logging
+import time
 #import task
-from rest import RestClient
-#import taskboard_interface
+from rest import RequestHandler
+from enablethingexceptions import TaskError, TaskboardError
+
+import copy
 
 class WatchedTaskBoard(object):
     def __init__(self, neighbour):
         self.url = neighbour.url
         self.unit_id = neighbour.unit_id
-        self.rest = RestClient(url, unit_id)
+        self.rest = RequestHandler(url, unit_id)
 
 class Watch(object):
     def __init__(self):
@@ -27,23 +30,36 @@ class Watch(object):
     
     def remove_taskboard(self):
         raise NotImplemented
-        
-    
+
+
+class TaskSet(object):
+    def __init__(self,tasks):
+        self.tasks = tasks
+    def isResponse(self):
+        for task in self.tasks:
+            if not task.isResponse():
+                return False
+        return True
 
     
 class Taskboard(object):
     # Implement an internal task board for managing tasks, adding, removing, 
     # and requesting new tasks from primary task board.
 
-    def __init__(self,unit_id):
-        self.tasks = []  
+    def __init__(self,unit_id, description, debug = True):
+        self.debugFlag = debug
+        self.description = description
+        self.tasks = []
+        self.tasksets = []  
         self.from_unit = unit_id
         self.unit_id = unit_id
         self.last_removed = None
         self.watch = Watch()
-    
-    def last_removed_task_id(self):
-        return self.last_removed
+        self.current_task = 0
+        self.num_removed =0
+        self.removed_tasks = []
+        self.index = 0
+
     
     def find_task(self,task_id):
         # Returns LookupError if no tasks found.
@@ -51,132 +67,200 @@ class Taskboard(object):
         task = [x for x in self.tasks if x.task_id == task_id]
 
         if len(task) > 1:
+            for t in task:
+                t.debug()
             raise ValueError("Task lookup returned more than one task")
         if len(task) < 1:
+            
+            #self.debug()
             raise LookupError("Task lookup returned no tasks")
        
         return task[0]
-    
-    def isEmpty(self):
-        return self.tasks == []
 
-
-    def add(self, task):
-
+    def queue(self, task):
+        # Ensure "processed" flag is false
+        task.processed = False
+        self.index = self.index+1
+        logging.info("Queueing task %s to unit %s on %s", task.task_id[:4],  self.unit_id[:4], self.description)
         try:
-            task = self.find_task(task.task_id)
+            existing_task = self.find_task(task.task_id)
+            
         except LookupError:
-            self.tasks.insert(0, task)
+            # Task is not found so add a new task
+            if task.isResponse():
+                task.response_timestamp = time.time()
+            elif task.isCommand():
+                task.command_timestamp = time.time()
+            task.index = self.index
+            self.tasks.append(task)
             return
         
-        raise Exception("An existing task with that task id was found")
-
-#     def update(self, task_id):
-#         task = self.find_task(task_id)
-#         print "*** task.update()"
-#         print "*** task.response", task.response
-#         task.update()
-#         print "*** task.response",task.response
-
-    def first(self):
-        # Return the first task which is a command addressed to this unit.
-        
-        for task in self.tasks:
-            print "task_id",task.task_id
-            if task.to_unit == self.from_unit:
-                print task.response
-                assert(task.response == {})
-                return task
-        return None
-        
-    
-    def remove(self, task):
-        logging.debug("Removing %s", task.task_id)
-        self.last_removed = task.task_id
-        self.tasks.remove(task)
-
-    def size(self):
-        return len(self.tasks)
-    
-    def print_console(self):
-        print "Active tasks"
-        for q in self.tasks:
-                q.print_console()
-
-#    def request (self, to_id, command):
-        # Takes a dict command and creates a new task.
-        # Generate a new task with a new UUID for the task
-#        task = taskobj.Task(unit_id = self.unit_id, command = command, from_unit = self.from_unit, to_unit = to_id)
-
-#        # Add task_uuid to array live_tasks.
-#        self.add(task)
-#        self.status = "waiting"
-#
-        return task
-
-    def respond (self, task):
-
-        #task_id
-        if task.response == {}:
-            raise ValueError("Response is empty")
-        
-        ''' Removed this but need to think about it '''
-        #task.add_response(board = 'Pending')
-
-        #task = self.find_task(task.task_id)
-        # Check this
-        # http://stackoverflow.com/questions/10858575/find-object-by-its-member-inside-a-list-in-python 
-        #task.update(response = task.response, board='Complete')
-        #task.respond(response)
-        index=-1
-        for t in self.tasks:
-            index=index+1
-            if t.task_id == task.task_id:
-                if t.response == {}:
-                    print "Exisitng response is blank"
-                    t = task
-                    self.tasks[index] = task
-                    return
-                else:
-                    raise LookupError("Task already has a response")
-                return
+        if existing_task.isResponse():
+            logging.info("Existing task %s has a response.  Task not addeded to queue.", task.task_id[:4])
+            return   
+        elif existing_task.isCommand():
             
-        raise LookupError("Task lookup returned no tasks")
-
-
-#     def get_new_task(self):
-#         # Return 
-#         for task in self.tasks:
-#             if task.to_unit == self.unit_id and task.board == 'Backlog':
-#                 assert(task.response == {})
-#                 task.board = 'Response'
-#                 return task
-#                         
-#         return None
-    
-
-                
-
-    def listen_for_response (self, task_id):
-
-        return self.find_task(task_id).listen_for_response()
-    
-
-    def check_all(self):
-        for task in self.tasks:
-            self.listen_for_response(task.task_id)
+            for index, t in enumerate(self.tasks):            
+                if t.task_id == task.task_id:
+            
+                    if t.isResponse():
+                        
+                        raise LookupError("Task already has a response")
+                    elif t.isCommand() and not t.isResponse() and task.isResponse():
+                        logging.debug("Existing response is blank %s", task.task_id)   
+            
+                    
+                        task.response_timestamp = time.time()
+                        task.index = self.index
+                        self.tasks[index] = task
+            
+                        existing_task.note = "Task replaced"
+                        logging.info("Task %s replaced", task.task_id[:4])
+                        return
+                    else:
+                        logging.error("Task %s attempted replace of identical task.  No action.", task.task_id[:4])
+                        
+                        return
+            
+            raise LookupError("Task lookup returned no matching tasks")
         
+        raise Exception ("Undefined situtation")
+        
+    def __iter__(self):
+        return self
+
+    def next(self): # Python 3: def __next__(self)
+        #print "next()"
+        #if len(self.tasks) > 0:
+        #    return self.tasks[0]
+        #else:
+        #    return None
+        
+        for task in self.tasks:
+            self.demote(task)
+            #print task.debug()
+            if not task.processed:
+                #print ">", task.debug()
+                return task
+            
+        return None
+                   
+    
+    def dequeue(self, task, protect_tasksets = True):
+        
+        logging.info("Dequeue() task %s from unit %s on %s", task.task_id[:4],  self.unit_id[:4], self.description)
+        self.last_removed = task.task_id
+               
+        for existing_task in list(self.tasks):
+            if task.task_id == existing_task.task_id:
+                #if self.debugFlag:
+                self.removed_tasks.append(existing_task) 
+                self.tasks.remove(existing_task)
+                logging.info("Dequeued task %s from unit %s on %s", task.task_id[:4],  self.unit_id[:4], self.description)
+                self.num_removed += 1
+                return
+        raise TaskboardError("Unable to dequeue task")
+        
+
+    
+    def demote(self,movetask):
+        try:
+            found_task = self.find_task(movetask.task_id)
+        except LookupError:
+            raise LookupError("Request task for demotion not found")
+            
+        for i, task in enumerate(self.tasks):
+            if task.task_id == movetask.task_id:
+                index = i
+                break
+        #print "index", index
+        self.tasks.insert(len(self.tasks), self.tasks.pop(index))
+    
+    def make_first(self,movetask):
+        try:
+            found_task = self.find_task(movetask.task_id)
+        except LookupError:
+            pass
+        for i, task in enumerate(self.tasks):
+            if task.task_id == movetask.task_id:
+                index = i
+                break
+        #print "index", index
+        self.tasks.insert(0, self.tasks.pop(index))
+
+                       
     def isResponse (self, task_id):
 
         
         return self.find_task(task_id).isResponse()
 
-    def debug(self):
-        print "taskboard", self.from_unit
-        if len(self.tasks) == 0:
+    def debug(self, onlyerrors = False):
+        print "="*79
+        print "Taskboard", self.unit_id[:4]+ " " +self.description,
+        r = 0
+        c=0
+        for i in self.tasks:
+            if i.isResponse():
+                r = r + 1
+            elif i.isCommand() and i.isResponse():
+                c = c + 1
+            
+        
+        if len(self.tasks) == 0 and len(self.removed_tasks) ==0:
             print "  <No tasks on task board>"
-        else:
 
+        else:
+            print
+            print "<", len(self.tasks), "tasks on task board (", self.num_removed, "removed)>"
+            print "  Responses",r,"/ Commands:",c
+            print "  unit  task Age(ms)   from  to      command response"
+            print "  live"
             for t in self.tasks:
                 t.debug()
+            print "  completed/removed"
+            for t in self.removed_tasks:
+                if onlyerrors:
+                    if t.status != 'Completed':
+                        t.debug()
+                else:
+                    t.debug()
+                
+                 
+        print "="*79
+
+    def debug_tasksets(self):
+        print "Tasksets, number removed: ",self.num_removed
+        for taskset in self.tasksets:
+            print taskset.isResponse(), 
+            for task in taskset.tasks:
+                print task.task_id[:4],
+                        
+
+    def add_taskset(self, tasks):
+        self.tasksets.append(TaskSet(tasks))
+    
+    def next_taskset(self):
+        
+        for taskset in list(self.tasksets):
+            isresponse = True
+            collection = []
+            for task in list(taskset.tasks):
             
+                found_task = self.find_task(task.task_id)
+
+                collection.append(found_task)
+                if not found_task.isResponse():
+                    isresponse = False
+                    
+            if isresponse == True:
+                # A response taskset has been found
+                for task in taskset.tasks:
+                        found_task = self.find_task(task.task_id)
+                        self.dequeue(found_task, protect_tasksets = False)                      
+                self.tasksets.remove(taskset)
+                
+                return collection
+            
+        return None
+                
+

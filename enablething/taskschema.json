@@ -1,0 +1,122 @@
+{
+    "type": "object",
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "id": "http://jsonschema.net",
+    "required": true,
+    "additionalProperties": false,
+    "properties": {
+        "board": {
+            "type": "string",
+            "required": true,
+            "enum": [
+                "Complete",
+                "Response",
+                "Backlog"
+            ]
+        },
+        "chronicle": {
+            "type": "array",
+            "required": true,
+            "items": {
+                "type": "object",
+                "required": false,
+                "additionalProperties": false,
+                "properties": {
+                    "hop": {
+                        "type": "number",
+                        "required": false
+                    },
+                    "time_ms": {
+                        "type": "number",
+                        "required": false
+                    },
+                    "unit_id": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            }
+        },
+        "command": {
+            "type": "object",
+            "id": "http://jsonschema.net/command",
+            "required": false,
+            "additionalProperties": false,
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": ["announce"]
+                  },
+                  {
+                    "type": "object",
+                    "required": ["output"]
+                  },
+                  {
+                    "type": "object",
+                    "required": ["configuration"]
+                  },
+                  {
+                    "type": "object",
+                    "required": ["clone"]
+                  },
+                  {
+                    "type": "object",
+                    "required": ["terminate"]
+                  },
+                  {
+                    "type": "object",
+                    "required": ["memory"]
+                  }
+            ],
+            "properties": {
+                "announce": {
+                    "type": "object"
+                },
+                "setting": {
+                    "type": "object"
+                },
+                                "memory": {
+                    "type": "object"
+                },
+                                "configuration": {
+                    "type": "object"
+                },
+                                "terminate": {
+                    "type": "object"
+                },
+                "output": {
+                    "type": "object"
+                },
+                                                "clone": {
+                    "type": "object"
+                }
+            }
+        },
+
+    "from_unit": {
+        "type": "string",
+        "id": "http://jsonschema.net/from_unit",
+        "required": true
+    },
+    "response": {
+        "type": "object",
+        "id": "http://jsonschema.net/response",
+        "required": true
+    },
+    "task_id": {
+        "type": "string",
+        "id": "http://jsonschema.net/task_id",
+        "required": true
+    },
+    "title": {
+        "type": "string",
+        "id": "http://jsonschema.net/title",
+        "required": false
+    },
+    "to_unit": {
+        "type": "string",
+        "id": "http://jsonschema.net/to_unit",
+        "required": true
+    }
+}
+}

@@ -3,6 +3,7 @@
 
 import unit
 
+from unitcontroller import BaseUnit
 import uuid
 import time
 import requests, json
@@ -39,7 +40,7 @@ import logging
 #    def unit_startup (self):
 #        # Specific start-up requirements
 
-class MemoryUnit(unit.BaseUnit):
+class MemoryUnit(BaseUnit):
     def process(self):
         # No process
         pass
@@ -49,7 +50,7 @@ class MemoryUnit(unit.BaseUnit):
     
 
 
-class charOutputUnit(unit.BaseUnit):
+class charOutputUnit(BaseUnit):
     def display_interface(self,text):
         print "--- 16char DISPLAY ---"
         s = text[0:16] + "/n" + text[16:32]
@@ -59,16 +60,20 @@ class charOutputUnit(unit.BaseUnit):
         
     def process(self):
        
-        if len(self.inputboard.input_container) > 1:
+        if len(self.inputconnector.inputunits) > 1:
             raise Exception("More than one input passed to PassThruUnit.") 
-        self.memory.history = self.inputboard.input_container[0].history
-        self.memory.forecast = self.inputboard.input_container[0].forecast
         
-        item = self.memory.latest()
+        datapoint = self.inputconnector.inputunits[0].memory.current_datapoint().json()
+        if datapoint['data'] != None:     
+            self.memory.add(data = datapoint['data'], time_stamp = datapoint['time_stamp'])
+
+        
+        item = self.memory.current_datapoint()
         if item.time_stamp == None or item.data == None:
             return
         print "charOutputUnit", item.json()
-        text = str(item.time_stamp) + str(item.data['time'])
+        print "item.data",item.data
+        text = str(item.time_stamp) + str(item.data)
         
         self.display_interface(text)
 
@@ -79,7 +84,7 @@ class charOutputUnit(unit.BaseUnit):
         #self.memory.history = 
         #self.memory.forecast = self.inputboard.input_container[0].forecast
   
-class weatherInputUnit(unit.BaseUnit):
+class weatherInputUnit(BaseUnit):
     def display_interface(self,text):
         print "--- 16char DISPLAY ---"
         s = text[0:16] + "/n" + text[16:32]
@@ -88,7 +93,7 @@ class weatherInputUnit(unit.BaseUnit):
         return s
         
     def process(self):
-        logging.info("process() %s", self.description)
+        logging.debug("process() %s", self.description)
         
         #dt= datetime.now()
         #time_stamp = dt.strftime('%Y-%m-%dT%H:%M:%S')

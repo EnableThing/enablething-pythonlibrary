@@ -518,3 +518,273 @@ INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 
 DEBUG:requests.packages.urllib3.connectionpool:"POST /unit/caf01485-3bb1-4337-a023-5ffc03bf073b ('HTTP/1.1',)" 200 44
 INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
 DEBUG:requests.packages.urllib3.connectionpool:"GET /unit/caf01485-3bb1-4337-a023-5ffc03bf073b/task/61ffed2ab07b43159d8ca88416d61e34 ('HTTP/1.1',)" 200 355
+INFO:root:get_task Clock unit
+DEBUG:root:get_task() - status new
+DEBUG:root:Checking input sets
+INFO:root:process() Clock unit
+DEBUG:root:Memory add()
+INFO:root:process() Clock unit
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Pass-through unit
+DEBUG:root:get_task() - status new
+DEBUG:root:Checking input sets
+INFO:root:start process() Pass-through unit
+DEBUG:root:Passing input to memory
+DEBUG:root:request_inputs() ['372eaad33e424e21971997653e29d48a']
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status new
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1054
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1054
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1054
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1054
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1054
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1054
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1054
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1054
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Clock unit
+DEBUG:root:get_task() - status new
+DEBUG:root:Checking input sets
+INFO:root:process() Clock unit
+DEBUG:root:Memory add()
+INFO:root:process() Clock unit
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Pass-through unit
+DEBUG:root:get_task() - status new
+DEBUG:root:Checking input sets
+INFO:root:start process() Pass-through unit
+DEBUG:root:Passing input to memory
+DEBUG:root:request_inputs() ['5f65e051c39d4ce68c91b6a8d75b86cd']
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 127.0.0.1
+DEBUG:requests.packages.urllib3.connectionpool:"POST /5f65e051c39d4ce68c91b6a8d75b86cd ('HTTP/1.1',)" 404 990
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status new
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered
+INFO:root:get_task Input unit - weather
+DEBUG:root:get_task() - status ready
+DEBUG:root:Checking input sets
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+INFO:root:process() Input unit - weather
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): api.wunderground.com
+DEBUG:requests.packages.urllib3.connectionpool:"GET /api/51e4897db8b4aa29/conditions/q/CYVR.json ('HTTP/1.1',)" 200 1053
+DEBUG:root:Memory add()
+DEBUG:root:poll triggered

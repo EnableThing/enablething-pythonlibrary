@@ -8,7 +8,10 @@
             {
             "common": {
                 "configurable": {
-                	"neighbours" : ["caf01485-3bb1-4337-a023-5ffc03bf073b"],
+                	"neighbours" : ["caf01485-3bb1-4337-a023-5ffc03bf073b",
+                					"0d2a1089-be8e-4216-96b6-46552d367091",
+                					"a789ada1-edb5-4cfe-b1f9-8584abbf8a2f",
+                					"d57c1438-2373-4448-8c23-0bd7ad034d6a"],
                     "communication": {
                         "address": [
                             "m", 
@@ -26,7 +29,7 @@
                     "memory_UUID": "9", 
                     "security": "off", 
                     "taskboard_id": "t", 
-                    "update_cycle": 1
+                    "update_cycle": 0
                 }, 
                 "non_configurable": {
                     "description": "Description of device", 
@@ -45,7 +48,10 @@
         {
             "common": {
                 "configurable": {
-                	"neighbours" : ["d57c1438-2373-4448-8c23-0bd7ad034d6a"],
+                	"neighbours" : ["3c82ef61-0875-41d3-99ba-101672d79d6b",
+                					"0d2a1089-be8e-4216-96b6-46552d367091",
+                					"a789ada1-edb5-4cfe-b1f9-8584abbf8a2f",
+                					"d57c1438-2373-4448-8c23-0bd7ad034d6a"],
                     "communication": {
                         "address": [
                             "m", 
@@ -63,7 +69,7 @@
                     "memory_UUID": "9", 
                     "security": "off", 
                     "taskboard_id": "t", 
-                    "update_cycle": 60
+                    "update_cycle": 0
                 }, 
                 "non_configurable": {
                     "description": "Description of device", 
@@ -82,7 +88,10 @@
         {
             "common": {
                 "configurable": {
-                	"neighbours" : ["d57c1438-2373-4448-8c23-0bd7ad034d6a"],
+                	"neighbours" : ["caf01485-3bb1-4337-a023-5ffc03bf073b",
+                					"3c82ef61-0875-41d3-99ba-101672d79d6b",
+                					"a789ada1-edb5-4cfe-b1f9-8584abbf8a2f",
+                					"d57c1438-2373-4448-8c23-0bd7ad034d6a"],
                     "communication": {
                         "address": [
                             "j", 
@@ -102,7 +111,7 @@
                     "memory_UUID": "g", 
                     "security": "off", 
                     "taskboard_id": "t", 
-                    "update_cycle": 5
+                    "update_cycle": 0
                 }, 
                 "non_configurable": {
                     "description": "Description of device", 
@@ -121,7 +130,10 @@
         {
             "common": {
                 "configurable": {
-                	"neighbours" : ["caf01485-3bb1-4337-a023-5ffc03bf073b"],
+                	"neighbours" : ["caf01485-3bb1-4337-a023-5ffc03bf073b",
+                					"3c82ef61-0875-41d3-99ba-101672d79d6b",
+                					"0d2a1089-be8e-4216-96b6-46552d367091",
+                					"d57c1438-2373-4448-8c23-0bd7ad034d6a"],
                     "communication": {
                         "address": [
                             "j", 
@@ -139,7 +151,7 @@
                     "memory_UUID": "g", 
                     "security": "off", 
                     "taskboard_id": "t", 
-                    "update_cycle": 5
+                    "update_cycle": 0
                 }, 
                 "non_configurable": {
                     "description": "Description of device", 
@@ -158,7 +170,10 @@
         {
             "common": {
                 "configurable": {
-                	"neighbours" : ["caf01485-3bb1-4337-a023-5ffc03bf073b"],
+                	"neighbours" : ["caf01485-3bb1-4337-a023-5ffc03bf073b",
+                					"3c82ef61-0875-41d3-99ba-101672d79d6b",
+                					"0d2a1089-be8e-4216-96b6-46552d367091",
+                					"a789ada1-edb5-4cfe-b1f9-8584abbf8a2f"],
                     "communication": {
                         "address": [
                             "j", 
@@ -178,7 +193,7 @@
                     "memory_UUID": "g", 
                     "security": "off", 
                     "taskboard_id": "t", 
-                    "update_cycle": 15
+                    "update_cycle": 0
                 }, 
                 "non_configurable": {
                     "description": "Description of device", 

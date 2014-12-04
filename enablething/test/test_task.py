@@ -45,7 +45,7 @@ class Test_Task(unittest.TestCase):
                                                 "hop": 2
                                             },
                                             {
-                                                "time_ms": .5,
+                                                "time_ms": 0.5,
                                                 "unit_id": "3c82ef61-0875-41d3-99ba-101672d79d6b",
                                                 "hop": 3
                                             }
